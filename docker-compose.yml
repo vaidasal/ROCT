@@ -1,8 +1,36 @@
 version: "3.8"
 
 services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: octlab
+      POSTGRES_PASSWORD: laser
+      POSTGRES_DB: LOCTTool_DB
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
   app:
     build: .
     ports:
       - "80:80"
     restart: unless-stopped
+    depends_on:
+      - db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    depends_on:
+      - db
+    ports:
+      - 5050:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@daimler.com
+      PGADMIN_DEFAULT_PASSWORD: laser
+    restart: unless-stopped
+    volumes:
+      - pgadmin:/var/lib/pgadmin/data
+
+volumes:
+  postgres-data:
+  pgadmin:
