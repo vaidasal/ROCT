@@ -1,14 +1,9 @@
-#python-multipart OAuth2 form data
-#python-jose[cryptography]
-#passlib[bcrypt]
-#psycopg2 (pstgresql)
-
 from datetime import timedelta
 
 from fastapi import Depends, FastAPI, HTTPException, Security
 from fastapi.security import (OAuth2PasswordRequestForm)
 
-from models.user import User
+from schema.user import User
 from dependencies import authenticate_user, get_current_active_user, get_current_user
 from config import settings
 from db.session import fake_users_db

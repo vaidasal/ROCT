@@ -1,4 +1,4 @@
-from models.user import UserInDB
+from schema.user import UserInDB
 
 
 

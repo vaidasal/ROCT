@@ -4,7 +4,7 @@ from jose import jwt, JWTError
 from pydantic import ValidationError
 
 from security import TokenData, verify_password
-from models.user import User
+from schema.user import User
 from db.session import get_user, fake_users_db
 from config import settings
 
