@@ -2,14 +2,16 @@ from pydantic import BaseModel
 from typing import Optional
 
 
+class UserBase(BaseModel):
+    email: str
 
-
-class User(BaseModel):
-    username: str
-    email: Optional[str] = None
-    full_name: Optional[str] = None
-    disabled: Optional[bool] = None
+class User(UserBase):
+    firstname: Optional[str] = None
+    lastname: Optional[str] = None
     scope: Optional[list] = None
 
-class UserInDB(User):
+    class Config:
+        orm_mode = True
+
+class UserCreate(UserBase):
     hashed_password: str
