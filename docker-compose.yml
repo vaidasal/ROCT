@@ -12,13 +12,13 @@ services:
     ports:
       - "5432:5432"
 
-  app:
-    build: .
-    ports:
-      - "80:80"
-    restart: unless-stopped
-    depends_on:
-      - db
+  #app:
+  #  build: .
+  #  ports:
+  #    - "80:80"
+  #  restart: unless-stopped
+  #  depends_on:
+  #    - db
 
   pgadmin:
     image: dpage/pgadmin4

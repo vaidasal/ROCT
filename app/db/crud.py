@@ -1,30 +1,84 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
+from typing import Any, Dict, Union, TypeVar, Optional
+from pydantic import BaseModel
+from fastapi.encoders import jsonable_encoder
 
 from models import users
-import schema
+from schema import user
+import security
+from db.base_class import Base
+from db.database import engine
+
 
 def get_user(db: Session, user_id: int):
-    print("##############################")
-    print(db)
-    print(user_id)
-    print(db.query(users.User))
-    dd = db.query(users.User).filter(users.User.id == user_id).first()
-    return dd
+    return db.query(users.User).filter(users.User.id == user_id).first()
 
 
-def get_user_by_email(db: Session, email: str):
-    return db.query(users.User).filter(users.email == email).first()
+def get_user_by_email(email: str) -> Optional[user.UserUpdate]:
+    Session = sessionmaker(engine)
+    session = Session()
+    try:
+        return session.query(users.User).filter(users.User.email == email).first()
+    finally:
+        session.close()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(users.User).offset(skip).limit(limit).all()
 
 
-def create_user(db: Session, user: schema.user.UserCreate):
-    hashed_password = user.password
-    db_user = users.User(email=user.email, hashed_password=hashed_password)
+def create_user(db: Session, user: user.UserUpdate):
+    hashed_password = security.get_password_hash(user.password)
+    db_user = users.User(
+        email=user.email, password=hashed_password,
+        firstname=user.firstname, lastname=user.lastname, scope=user.scope
+    )
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
     return db_user
 
+def update_user(db: Session, *, db_obj: user, obj_in: Union[user.UserUpdate, Dict[str, Any]]
+) -> user.User:
+    if isinstance(obj_in, dict):
+        update_data = obj_in
+    else:
+        update_data = obj_in.dict(exclude_unset=True)
+    if update_data["password"]:
+        hashed_password = security.get_password_hash(update_data["password"])
+        del update_data["password"]
+        update_data["password"] = hashed_password
+    return update(db, db_obj=db_obj, obj_in=update_data)
+
+def update(
+        db: Session,
+        *,
+        db_obj: TypeVar("ModelType", bound=Base),
+        obj_in: Union[TypeVar("UpdateSchemaType", bound=BaseModel), Dict[str, Any]]
+) -> TypeVar("ModelType", bound=Base):
+    obj_data = jsonable_encoder(db_obj)
+    if isinstance(obj_in, dict):
+        update_data = obj_in
+    else:
+        update_data = obj_in.dict(exclude_unset=True)
+    for field in obj_data:
+        if field in update_data:
+            setattr(db_obj, field, update_data[field])
+    db.add(db_obj)
+    db.commit()
+    db.refresh(db_obj)
+    return db_obj
+
+
+def get_a_db():
+    session = sessionmaker(engine)
+    try:
+        yield session.begin()
+    finally:
+        session.close()
+
+def remove(db: Session, type: TypeVar("ModelType", bound=Base),  *, id: int) -> TypeVar("ModelType", bound=Base):
+    obj = db.query(type).get(id)
+    db.delete(obj)
+    db.commit()
+    return obj

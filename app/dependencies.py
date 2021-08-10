@@ -2,10 +2,13 @@ from fastapi.security import SecurityScopes, OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status, Security
 from jose import jwt, JWTError
 from pydantic import ValidationError
+from sqlalchemy.orm import Session
+from typing import Optional
 
 from security import TokenData, verify_password
 from schema.user import User
-from db.database import get_user, fake_users_db
+from db.database import SessionLocal
+from db import crud
 from config import settings
 
 
@@ -36,7 +39,7 @@ async def get_current_user(security_scopes: SecurityScopes, token: str = Depends
         token_data = TokenData(scopes=token_scopes, username=username)
     except (JWTError, ValidationError):
         raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
+    user = crud.get_user_by_email(email=token_data.username)
     if user is None:
         raise credentials_exception
     for scope in security_scopes.scopes:
@@ -49,15 +52,24 @@ async def get_current_user(security_scopes: SecurityScopes, token: str = Depends
     return user
 
 async def get_current_active_user(current_user: User = Security(get_current_user, scopes=[])):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-def authenticate_user(fake_db, username: str, password: str):
-    user = get_user(fake_db, username)
+def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
+    user = crud.get_user_by_email(email=email)
     if not user:
         return False
-    if not verify_password(password, user.hashed_password):
+    if not verify_password(password, user.password):
         return False
     return user
+
+
+# Dependency
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
 

@@ -1,53 +1,82 @@
 from datetime import timedelta
-from typing import List
+from typing import List, Any
+from pydantic.networks import EmailStr
 from sqlalchemy.orm import Session
 
-from fastapi import Depends, FastAPI, HTTPException, Security
+from fastapi import Depends, FastAPI, HTTPException, Body
 from fastapi.security import (OAuth2PasswordRequestForm)
+from fastapi.encoders import jsonable_encoder
 
-from schema.user import User, UserCreate
-from dependencies import authenticate_user, get_current_active_user, get_current_user
+
+from dependencies import authenticate_user, get_current_active_user, get_db
 from config import settings
-from db.database import fake_users_db, get_db
 from db import crud
 from security import create_access_token
 from schema.token import Token
+from schema.user import User, UserUpdate
+import models
 
 
 app = FastAPI()
 
 
 @app.post("/token", response_model=Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+    user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=400, detail="Incorrect username or password")
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     # get scopes: form_data.scopes
     access_token = create_access_token(
-        data={"sub": user.username, "scopes": user.scope},
+        data={"sub": user.email, "scopes": user.scope},
         expires_delta=access_token_expires,
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/users/me/", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_active_user)):
+@app.get("/me", response_model=User)
+def read_user_me(current_user: User = Depends(get_current_active_user)) -> Any:
+    """
+    Get current user.
+    """
     return current_user
 
+@app.put("/me", response_model=User)
+def update_user_me(
+    *,
+    db: Session = Depends(get_db),
+    new_password: str = Body(None),
+    firstname: str = Body(None),
+    lastname: str = Body(None),
+    email: EmailStr = Body(None),
+    current_user: User = Depends(get_current_active_user),
+) -> Any:
+    """
+    Update own user.
+    """
+    current_user_data = jsonable_encoder(current_user)
+    print(current_user_data)
+    user_in = UserUpdate(**current_user_data)
+    print(user_in)
+    if new_password is not None:
+        user_in.password = new_password
+    if firstname is not None:
+        user_in.firstname = firstname
+    if lastname is not None:
+        user_in.lastname = lastname
+    if email is not None:
+        db_user = crud.get_user_by_email(email=email)
+        if db_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        else:
+            user_in.email = email
 
-@app.get("/users/me/items/")
-async def read_own_items(current_user: User = Security(get_current_active_user, scopes=["Administrator"])):
-    return [{"item_id": "Foo", "owner": current_user.username}]
-
-
-@app.get("/status/")
-async def read_system_status(current_user: User = Depends(get_current_user)):
-    return {"status": "ok"}
+    user = crud.update_user(db, db_obj=current_user, obj_in=user_in)
+    return user
 
 @app.post("/users/", response_model=User)
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, email=user.email)
+def create_user(user: UserUpdate, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_email(email=user.email)
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return crud.create_user(db=db, user=user)
@@ -65,3 +94,39 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
+
+@app.post("/open", response_model=User)
+def create_user_open(user_in: UserUpdate, db: Session = Depends(get_db)) -> Any:
+    """
+    Create new user without the need to be logged in.
+    """
+    if not settings.USERS_OPEN_REGISTRATION:
+        raise HTTPException(
+            status_code=403,
+            detail="Open user registration is forbidden on this server",
+        )
+    user = crud.get_user_by_email(email=user_in.email)
+    if user:
+        raise HTTPException(
+            status_code=400,
+            detail="The user with this username already exists in the system",
+        )
+
+    user = crud.create_user(db, user=user_in)
+    return user
+
+@app.delete("/{id}", response_model=User)
+def delete_item(
+    *,
+    db: Session = Depends(get_db),
+    id: int,
+    current_user: models.users.User = Depends(get_current_active_user),
+) -> Any:
+    """
+    Delete an item.
+    """
+    user = crud.get_user(db=db, user_id=id)
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    removed_user = crud.remove(db=db, type=models.users.User, id=id)
+    return removed_user

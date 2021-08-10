@@ -3,3 +3,4 @@ python-jose[cryptography]
 passlib[bcrypt]
 psycopg2
 alembic
+pydantic[email]
