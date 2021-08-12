@@ -1,6 +1,5 @@
 from sqlalchemy import Column, DateTime, String, Integer, func
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.dialects.postgresql import JSON
 
 Base = declarative_base()
 
@@ -11,7 +10,7 @@ class User(Base):
     firstname = Column(String)
     lastname = Column(String)
     password = Column(String, nullable=False)
-    scope = Column(JSON)
+    scope = Column(String)
     created = Column(DateTime, default=func.now())
 
     def __repr__(self):
