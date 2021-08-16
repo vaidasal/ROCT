@@ -33,7 +33,7 @@ app.add_middleware(
     allow_headers=["*"])
 
 
-@app.post("/login", response_model=Token)
+@app.post("/login")
 async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
@@ -44,7 +44,7 @@ async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth
         data={"sub": user.email, "scopes": user.scope},
         expires_delta=access_token_expires,
     )
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "scope": user.scope}
 
 
 @app.get("/me", response_model=User, dependencies=[Depends(is_valid_admin)])

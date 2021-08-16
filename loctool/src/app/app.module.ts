@@ -26,6 +26,8 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatMenuModule} from '@angular/material/menu';
+import { HomeModule } from './modules/home/home.module';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     SecureComponent,
     NotFoundComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -54,6 +56,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatFormFieldModule,
     MatRadioModule,
     MatSidenavModule,
+    MatMenuModule,
+    HomeModule,
   ],
   providers: [
     {

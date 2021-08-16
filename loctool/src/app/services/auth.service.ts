@@ -52,6 +52,8 @@ export class AuthService {
         tap(res => {
           this.tokenService.saveToken(res.access_token);
           this.tokenService.saveRefreshToken(res.refresh_token);
+          this.tokenService.saveScope(res.scope);
+          console.log(res);
         }),
         catchError(AuthService.handleError)
       );
@@ -63,6 +65,7 @@ export class AuthService {
     const body = new HttpParams()
       .set('refresh_token', refreshData.refresh_token)
       .set('grant_type', 'refresh_token');
+      console.log('refresh')
     return this.http.post<any>(API_URL + '/login', body, HTTP_OPTIONS)
       .pipe(
         tap(res => {

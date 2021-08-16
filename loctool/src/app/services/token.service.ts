@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 const ACCESS_TOKEN = 'access_token';
 const REFRESH_TOKEN = 'refresh_token';
+const SCOPE = 'scope';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +34,10 @@ export class TokenService {
   removeRefreshToken(): void {
     localStorage.removeItem(REFRESH_TOKEN);
   }
+
+  saveScope(scope): void {
+    localStorage.setItem(SCOPE, scope);
+  }
+
 
 }
