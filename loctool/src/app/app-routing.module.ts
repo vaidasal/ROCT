@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: '404', component: NotFoundComponent },
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
+  { path: 'modules/user/newUser', loadChildren: () => import('./modules/user/new-user/new-user.module').then(m => m.NewUserModule) },
   { path: '**', redirectTo: '404' }
 ];
 
