@@ -45,7 +45,6 @@ export class AuthService {
     const body = new HttpParams()
       .set('username', loginData.username)
       .set('password', loginData.password)
-      //.set('grant_type', 'password');
 
     return this.http.post<any>(API_URL + '/login', body, HTTP_OPTIONS)
       .pipe(
@@ -53,7 +52,7 @@ export class AuthService {
           this.tokenService.saveToken(res.access_token);
           this.tokenService.saveRefreshToken(res.refresh_token);
           this.tokenService.saveScope(res.scope);
-          console.log(res);
+          this.tokenService.saveName(res.name);
         }),
         catchError(AuthService.handleError)
       );

@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { UserModule } from '../user/user.module';
 import { RouterModule } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @NgModule({
@@ -19,6 +20,7 @@ import { RouterModule } from '@angular/router';
     HomeRoutingModule,
     MatMenuModule,
     MatIconModule,
+    MatButtonModule,
     MatToolbarModule,
     UserModule,
     RouterModule,

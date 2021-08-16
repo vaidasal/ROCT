@@ -4,6 +4,7 @@ import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
 import {AuthService} from '../../services/auth.service';
 import {Router} from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -29,7 +30,8 @@ export class RegisterComponent implements OnInit {
   isLoadingResults = false;
   matcher = new MyErrorStateMatcher();
 
-  constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
+  constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder,
+    public dialogRef: MatDialogRef<RegisterComponent>) { }
 
   ngOnInit(): void {
     this.registerForm = this.formBuilder.group({
@@ -43,12 +45,10 @@ export class RegisterComponent implements OnInit {
 
   onFormSubmit(): void {
     this.isLoadingResults = true;
-    console.log(this.registerForm.value)
-    console.log(this.registerForm.get('scopes'))
     this.authService.register(this.registerForm.value)
       .subscribe((res: any) => {
         this.isLoadingResults = false;
-        this.router.navigate(['/login']).then(_ => console.log('You are registered now!'));
+        this.router.navigate(['home/user']).then(_ => this.dialogRef.close());
       }, (err: any) => {
         console.log(err);
         this.isLoadingResults = false;

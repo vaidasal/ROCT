@@ -1,11 +1,14 @@
 <mat-toolbar color="primary">
+
     <span>{{ title }}</span>
     <span class="toolbar-spacer"></span>
-    <button mat-icon-button [matMenuTriggerFor]="beforeMenu"><mat-icon>menu</mat-icon></button>
+    <span>{{ name }}</span>
+    <button mat-icon-button [matMenuTriggerFor]="beforeMenu"><mat-icon>more_vert</mat-icon></button>
     <mat-menu #beforeMenu="matMenu" xPosition="before">
         <button (click)="logout()" mat-menu-item>Logout</button>
         <button routerLink="/home/user" mat-menu-item>User</button>
     </mat-menu>
+
   </mat-toolbar>
 
 <router-outlet></router-outlet>

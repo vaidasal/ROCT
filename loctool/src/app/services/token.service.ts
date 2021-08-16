@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 const ACCESS_TOKEN = 'access_token';
 const REFRESH_TOKEN = 'refresh_token';
 const SCOPE = 'scope';
+const NAME = '';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,14 @@ export class TokenService {
 
   saveScope(scope): void {
     localStorage.setItem(SCOPE, scope);
+  }
+
+  saveName(name): void {
+    localStorage.setItem(NAME, name);
+  }
+
+  getName(): string {
+    return localStorage.getItem(NAME) || '';
   }
 
 

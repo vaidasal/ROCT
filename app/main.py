@@ -44,7 +44,7 @@ async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth
         data={"sub": user.email, "scopes": user.scope},
         expires_delta=access_token_expires,
     )
-    return {"access_token": access_token, "token_type": "bearer", "scope": user.scope}
+    return {"access_token": access_token, "token_type": "bearer", "scope": user.scope, "name": f"{user.firstname} {user.lastname}"}
 
 
 @app.get("/me", response_model=User, dependencies=[Depends(is_valid_admin)])
@@ -87,7 +87,7 @@ def update_user_me(
     user = crud.update_user(db, db_obj=current_user, obj_in=user_in)
     return user
 
-@app.post("/users/", response_model=User, dependencies=[Depends(is_valid_user)])
+@app.post("/users/", response_model=User, dependencies=[Depends(is_valid_admin)])
 def create_user(user: UserUpdate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(email=user.email)
     if db_user:
@@ -95,7 +95,7 @@ def create_user(user: UserUpdate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 
-@app.get("/users/", response_model=List[User], dependencies=[Depends(is_valid_user)])
+@app.get("/users/", response_model=List[User], dependencies=[Depends(is_valid_admin)])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
@@ -128,7 +128,7 @@ def create_user_open(user_in: UserUpdate, db: Session = Depends(get_db)) -> Any:
     user = crud.create_user(db, user=user_in)
     return user
 
-@app.delete("/{id}", response_model=User, dependencies=[Depends(is_valid_user)])
+@app.delete("/{id}", response_model=User, dependencies=[Depends(is_valid_admin)])
 def delete_item(
     *,
     db: Session = Depends(get_db),
