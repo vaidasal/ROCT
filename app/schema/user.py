@@ -16,3 +16,9 @@ class User(UserBase):
 
 class UserUpdate(User):
     password: str
+
+class UserID(User):
+    id: Optional[int] = None
+
+class UserUpdateAll(UserID):
+    new_password : str

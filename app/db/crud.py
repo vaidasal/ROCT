@@ -22,6 +22,14 @@ def get_user_by_email(email: str) -> Optional[user.UserUpdate]:
     finally:
         session.close()
 
+def get_user_by_id(id: int) -> Optional[user.UserUpdate]:
+    Session = sessionmaker(engine)
+    session = Session()
+    try:
+        return session.query(users.User).filter(users.User.id == id).first()
+    finally:
+        session.close()
+
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
     return db.query(users.User).offset(skip).limit(limit).all()
@@ -44,11 +52,13 @@ def update_user(db: Session, *, db_obj: user, obj_in: Union[user.UserUpdate, Dic
         update_data = obj_in
     else:
         update_data = obj_in.dict(exclude_unset=True)
-    if update_data["password"]:
+    print(update_data)
+    if "password" in update_data:
         hashed_password = security.get_password_hash(update_data["password"])
         del update_data["password"]
         update_data["password"] = hashed_password
     return update(db, db_obj=db_obj, obj_in=update_data)
+
 
 def update(
         db: Session,

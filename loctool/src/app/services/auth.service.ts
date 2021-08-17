@@ -94,5 +94,32 @@ export class AuthService {
       .pipe(catchError(AuthService.handleError));
   }
 
+  changePW(data: any): Observable<any> {
+    console.log(data);
+    return this.http.post<any>(API_URL + '/newpw', data)
+      .pipe(
+        tap(_ => AuthService.log('newPW')),
+        catchError(AuthService.handleError)
+      );
+  }
+
+  update(data: any): Observable<any> {
+    console.log("UPDATE!!");
+    console.log(data);
+    return this.http.post<any>(API_URL + '/update', data)
+      .pipe(
+        tap(_ => AuthService.log('updating')),
+        catchError(AuthService.handleError)
+      );
+  }
+
+  delete(id: number): Observable<any> {
+    return this.http.delete(API_URL + '/delete/' + String(id))
+      .pipe(
+        tap(_ => AuthService.log('deleting')),
+        catchError(AuthService.handleError)
+      );
+  }
+
 
 }

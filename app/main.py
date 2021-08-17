@@ -13,7 +13,7 @@ from config import settings
 from db import crud
 from security import create_access_token
 from schema.token import Token
-from schema.user import User, UserUpdate
+from schema.user import User, UserUpdate, UserID, UserUpdateAll
 import models
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -58,7 +58,7 @@ def read_user_me(current_user: User = Depends(get_current_user)) -> Any:
 def update_user_me(
     *,
     db: Session = Depends(get_db),
-    new_password: str = Body(None),
+    newpassword: str = Body(None),
     firstname: str = Body(None),
     lastname: str = Body(None),
     email: EmailStr = Body(None),
@@ -68,9 +68,7 @@ def update_user_me(
     Update own user.
     """
     current_user_data = jsonable_encoder(current_user)
-    print(current_user_data)
     user_in = UserUpdate(**current_user_data)
-    print(user_in)
     if new_password is not None:
         user_in.password = new_password
     if firstname is not None:
@@ -87,7 +85,58 @@ def update_user_me(
     user = crud.update_user(db, db_obj=current_user, obj_in=user_in)
     return user
 
-@app.post("/users/", response_model=User, dependencies=[Depends(is_valid_admin)])
+
+@app.post("/update", response_model=User, dependencies=[Depends(is_valid_admin), Depends(is_valid_user)])
+def update_user(new_user_data: UserUpdateAll, db: Session = Depends(get_db)) -> Any:
+    """
+    Update own user.
+    """
+
+    user_old = crud.get_user_by_id(new_user_data.id)
+    user_new = {}
+
+    if new_user_data.new_password != "old password":
+        user_new["password"] = new_user_data.new_password
+    user_new["firstname"] = new_user_data.firstname
+    user_new["lastname"] = new_user_data.lastname
+    user_new["scope"] = new_user_data.scope
+    if user_old.email != new_user_data.email:
+        db_user = crud.get_user_by_email(email=new_user_data.email)
+        if db_user:
+            raise HTTPException(status_code=400, detail="Email already registered")
+        else:
+            user_new["email"] = new_user_data.email
+    else:
+        user_new["email"] = new_user_data.email
+    print(user_new)
+
+    user = crud.update_user(db, db_obj=user_old, obj_in=user_new)
+
+    return user
+
+@app.post("/newpw", response_model=User, dependencies=[Depends(is_valid_admin), Depends(is_valid_user)])
+def new_pw(
+    *,
+    db: Session = Depends(get_db),
+    password: str = Body(None),
+    newPassword: str = Body(None),
+    current_user: User = Depends(get_current_user),
+) -> Any:
+    """
+    Change own password.
+    """
+    current_user_data = jsonable_encoder(current_user)
+    user_in = UserUpdate(**current_user_data)
+    user = authenticate_user(db, user_in.email, password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Wrong old password")
+    if newPassword is not None:
+        user_in.password = newPassword
+
+    user = crud.update_user(db, db_obj=current_user, obj_in=user_in)
+    return user
+
+@app.post("/users", response_model=User, dependencies=[Depends(is_valid_admin)])
 def create_user(user: UserUpdate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_email(email=user.email)
     if db_user:
@@ -95,7 +144,7 @@ def create_user(user: UserUpdate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 
-@app.get("/users/", response_model=List[User], dependencies=[Depends(is_valid_admin)])
+@app.get("/users", response_model=List[UserID], dependencies=[Depends(is_valid_admin)])
 def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     users = crud.get_users(db, skip=skip, limit=limit)
     return users
@@ -128,7 +177,7 @@ def create_user_open(user_in: UserUpdate, db: Session = Depends(get_db)) -> Any:
     user = crud.create_user(db, user=user_in)
     return user
 
-@app.delete("/{id}", response_model=User, dependencies=[Depends(is_valid_admin)])
+@app.delete("/delete/{id}", response_model=User, dependencies=[Depends(is_valid_admin)])
 def delete_item(
     *,
     db: Session = Depends(get_db),
@@ -137,6 +186,7 @@ def delete_item(
     """
     Delete an item.
     """
+    print(id)
     user = crud.get_user(db=db, user_id=id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")

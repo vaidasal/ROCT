@@ -1,6 +1,6 @@
 import { Component, NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RegisterComponent } from './components/register/register.component';
+import { RegisterComponent } from './modules/user/register/register.component';
 import { LoginComponent } from './components/login/login.component';
 import { SecureComponent } from './components/secure/secure.component';
 import { AuthGuard } from './auth.guard';
@@ -13,6 +13,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: '404', component: NotFoundComponent },
   { path: 'home', loadChildren: () => import('./modules/home/home.module').then(m => m.HomeModule) },
+  { path: 'modules/settings', loadChildren: () => import('./modules/settings/settings.module').then(m => m.SettingsModule) },
   { path: '**', redirectTo: '404' }
 ];
 

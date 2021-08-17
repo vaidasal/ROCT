@@ -5,7 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
-import {MatToolbarModule} from '@angular/material/toolbar'; 
+import {MatToolbarModule, MatToolbarRow} from '@angular/material/toolbar'; 
 
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {AuthInterceptor} from './services/auth.interceptor';
@@ -23,11 +23,12 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTableModule} from '@angular/material/table';
 import {MatIconModule} from '@angular/material/icon';
 import { LoginComponent } from './components/login/login.component';
-import { RegisterComponent } from './components/register/register.component';
+import { RegisterComponent } from './modules/user/register/register.component';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatMenuModule} from '@angular/material/menu';
 import { HomeModule } from './modules/home/home.module';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,6 @@ import { HomeModule } from './modules/home/home.module';
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatSortModule,
     MatTableModule,
@@ -58,6 +58,9 @@ import { HomeModule } from './modules/home/home.module';
     MatSidenavModule,
     MatMenuModule,
     HomeModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatProgressBarModule,
   ],
   providers: [
     {

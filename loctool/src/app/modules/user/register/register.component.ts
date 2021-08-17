@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import {ErrorStateMatcher} from '@angular/material/core';
 import {FormBuilder, FormControl, FormGroup, FormGroupDirective, NgForm, Validators} from '@angular/forms';
-import {AuthService} from '../../services/auth.service';
+import {AuthService} from '../../../services/auth.service';
 import {Router} from '@angular/router';
 import { MatDialogRef } from '@angular/material/dialog';
 
@@ -16,7 +16,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['../../app.component.scss']
+  styleUrls: ['../../../app.component.scss']
 })
 
 export class RegisterComponent implements OnInit {

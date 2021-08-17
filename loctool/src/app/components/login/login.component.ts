@@ -25,6 +25,10 @@ export class LoginComponent implements OnInit {
   isLoadingResults = false;
   matcher = new MyErrorStateMatcher();
 
+  hide = false;
+
+  
+
   constructor(private authService: AuthService, private router: Router, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
@@ -35,14 +39,14 @@ export class LoginComponent implements OnInit {
   }
 
   onFormSubmit(): void {
-    this.isLoadingResults = true;
+    this.hide = true;
     this.authService.login(this.loginForm.value)
       .subscribe(() => {
-        this.isLoadingResults = false;
+        this.hide = false;
         this.router.navigate(['/home']).then(_ => console.log('You are secure now!'));
       }, (err: any) => {
         console.log(err);
-        this.isLoadingResults = false;
+        this.hide = false;
       });
   }
 
