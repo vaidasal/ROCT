@@ -1,3 +1,5 @@
+# activate venv: source venv/Py3VEnv/bin/activate
+
 from datetime import timedelta
 from typing import List, Any
 from pydantic.networks import EmailStr
@@ -7,6 +9,9 @@ from fastapi import Depends, FastAPI, HTTPException, Body
 from fastapi.security import (OAuth2PasswordRequestForm)
 from fastapi.encoders import jsonable_encoder
 
+import random
+import os
+
 
 from dependencies import authenticate_user, get_db, get_current_user, is_valid_user, is_valid_admin
 from config import settings
@@ -14,7 +19,10 @@ from db import crud
 from security import create_access_token
 from schema.token import Token
 from schema.user import User, UserUpdate, UserID, UserUpdateAll
+from schema.octcsv import OctCSV
 import models
+from models.users import CsvData
+from octcsvreader import OctCsvReader
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -32,6 +40,47 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"])
 
+from models.users import OctCSV
+
+@app.get("/refresh", dependencies=[Depends(is_valid_user)])
+async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    userid = current_user.id
+    dataList = []
+    reader = OctCsvReader()
+    currPath = os.getcwd()
+    (fileList, detailList) = reader.getCSVNameDetailFromDir(os.path.join(currPath, "data"))
+    for n in range(len(fileList)):
+
+        #check if detail["SeamID"] already in DB
+
+        data = reader.readTablesFromCSV(fileList[n])
+        detailList[n]["userid"] = userid
+        data["fileinfo"] = detailList[n]
+        dataList.append(data)
+
+    for data in dataList:
+        info = data['fileinfo']
+        keys = list(data.keys())
+        keys.remove('fileinfo')
+        for key in keys:
+            dkey = data[key].keys()
+            print(data[key]["seam"])
+            type = "Point" if len(dkey) == 2 else "Line"
+            tData = info
+            tData["linenumber"] = data[key]["seam"]
+            tData["type"] = type
+            tdata = OctCSV(**tData)
+            id = crud.createEntry(db, tdata)
+            ndata = CsvData(data=data[key], octcsv_id=id)
+            _ = crud.createEntry(db, ndata)
+
+    return "success"
+
+@app.get("/octcsv", dependencies=[Depends(is_valid_user)])
+async def getOctCSV(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
+    data = crud.get_octcsv(db, skip=skip, limit=limit)
+    return data
+
 
 @app.post("/login")
 async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
@@ -47,7 +96,7 @@ async def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth
     return {"access_token": access_token, "token_type": "bearer", "scope": user.scope, "name": f"{user.firstname} {user.lastname}"}
 
 
-@app.get("/me", response_model=User, dependencies=[Depends(is_valid_admin)])
+@app.get("/me", response_model=User, dependencies=[Depends(is_valid_user)])
 def read_user_me(current_user: User = Depends(get_current_user)) -> Any:
     """
     Get current user.
@@ -86,7 +135,7 @@ def update_user_me(
     return user
 
 
-@app.post("/update", response_model=User, dependencies=[Depends(is_valid_admin), Depends(is_valid_user)])
+@app.post("/update", response_model=User, dependencies=[Depends(is_valid_admin)])
 def update_user(new_user_data: UserUpdateAll, db: Session = Depends(get_db)) -> Any:
     """
     Update own user.
@@ -114,7 +163,7 @@ def update_user(new_user_data: UserUpdateAll, db: Session = Depends(get_db)) -> 
 
     return user
 
-@app.post("/newpw", response_model=User, dependencies=[Depends(is_valid_admin), Depends(is_valid_user)])
+@app.post("/newpw", response_model=User, dependencies=[Depends(is_valid_user)])
 def new_pw(
     *,
     db: Session = Depends(get_db),
@@ -150,7 +199,7 @@ def read_users(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return users
 
 
-@app.get("/users/{user_id}", response_model=User, dependencies=[Depends(is_valid_user)])
+@app.get("/users/{user_id}", response_model=User, dependencies=[Depends(is_valid_admin)])
 def read_user(user_id: int, db: Session = Depends(get_db)):
     db_user = crud.get_user(db, user_id=user_id)
     if db_user is None:

@@ -17,7 +17,18 @@ export class DataService {
   }
 
   getAllUsers(): Observable<any> {
+    console.log("USERS")
     return this.http.get<any>(API_URL + '/users').pipe(tap(res => console.log(res)));
+  }
+
+  getOctCSV(): Observable<any> {
+    console.log("OctCSV")
+    return this.http.get<any>(API_URL + '/octcsv').pipe(tap(res => console.log(res)));
+  }
+
+  getRefreshCSV(): Observable<any> {
+    console.log("get!!")
+    return this.http.get<any>(API_URL + '/refresh').pipe(tap(res => console.log(res)));
   }
 
 }

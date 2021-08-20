@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy import cast, Date
 from typing import Any, Dict, Union, TypeVar, Optional
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
@@ -32,8 +33,12 @@ def get_user_by_id(id: int) -> Optional[user.UserUpdate]:
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(users.User).offset(skip).limit(limit).all()
+    return db.query(users.OctCSV).offset(skip).limit(limit).all()
 
+def get_octcsv(db: Session, skip: int = 0, limit: int = 100):
+    data = db.query(users.OctCSV).offset(skip).limit(limit).all()
+
+    return data
 
 def create_user(db: Session, user: user.UserUpdate):
     hashed_password = security.get_password_hash(user.password)
@@ -92,3 +97,12 @@ def remove(db: Session, type: TypeVar("ModelType", bound=Base),  *, id: int) -> 
     db.delete(obj)
     db.commit()
     return obj
+
+def createEntry(
+        db: Session,
+        new_obj: TypeVar("ModelType", bound=Base)
+) -> TypeVar("ModelType", bound=Base):
+    db.add(new_obj)
+    db.commit()
+    db.refresh(new_obj)
+    return new_obj.id

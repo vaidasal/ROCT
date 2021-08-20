@@ -40,19 +40,21 @@ async def get_current_user(security_scopes: SecurityScopes, token: str = Depends
     except (JWTError, ValidationError):
         raise credentials_exception
     user = crud.get_user_by_email(email=token_data.username)
+
     if user is None:
         raise credentials_exception
-    for scope in security_scopes.scopes:
-        if scope not in token_data.scopes:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Not enough permissions",
-                headers={"WWW-Authenticate": authenticate_value},
-            )
+
+    if token_data.scopes not in "".join(security_scopes.scopes):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not enough permissions",
+            headers={"WWW-Authenticate": authenticate_value},
+        )
+
     return user
 
 
-async def is_valid_user(current_user: User = Security(get_current_user, scopes="user")):
+async def is_valid_user(current_user: User = Security(get_current_user, scopes=["user", "admin"])):
     return current_user
 
 async def is_valid_admin(current_user: User = Security(get_current_user, scopes="admin")):

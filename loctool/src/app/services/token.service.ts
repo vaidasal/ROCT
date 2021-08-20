@@ -40,6 +40,10 @@ export class TokenService {
     localStorage.setItem(SCOPE, scope);
   }
 
+  getScope(): string {
+    return localStorage.getItem(SCOPE) || '';
+  }
+
   saveName(name): void {
     localStorage.setItem(NAME, name);
   }

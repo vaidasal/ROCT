@@ -1,0 +1,39 @@
+.OctCSV {
+    width: 100%;
+    display: table;
+  }
+  
+.mat-row .mat-cell {
+border-bottom: 1px solid transparent;
+border-top: 1px solid transparent;
+cursor: pointer;
+text-align: left;
+padding: 10pt;
+vertical-align: middle;
+}
+
+th {
+    text-align: left!important;
+    padding: 10pt!important;
+    vertical-align: middle;
+    margin: 0pt;
+}
+
+#idCol, #idHead {
+    text-align: right!important;
+}
+
+
+
+
+.mat-row:hover .mat-cell {
+border-color: currentColor;
+}
+
+.container {
+    padding: 15pt;
+}
+
+#newButton {
+    float: right;
+}

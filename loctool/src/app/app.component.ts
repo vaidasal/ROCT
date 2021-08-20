@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { SharingService } from './services/sharing.service';
 
 @Component({
   selector: 'app-root',
@@ -8,4 +10,19 @@ import { Component } from '@angular/core';
 export class AppComponent {
 
   title = 'LOCTool';
+
+  loader!: boolean;
+  subscription!: Subscription;
+
+  constructor(private share: SharingService) {}
+
+  ngOnInit() {
+    this.subscription = this.share.loaderSource.subscribe(loader => this.loader = loader);
+    this.newLoader(false);
+  }
+
+  newLoader(load: boolean) {
+    this.share.changeLoader(load);
+  }
+
 }

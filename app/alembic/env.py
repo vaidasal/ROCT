@@ -20,6 +20,7 @@ fileConfig(config.config_file_name)
 from models import users
 target_metadata = users.Base.metadata
 
+
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")

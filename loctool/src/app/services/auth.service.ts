@@ -93,9 +93,9 @@ export class AuthService {
     return this.http.get<any>(API_URL + '/me')
       .pipe(catchError(AuthService.handleError));
   }
+  
 
   changePW(data: any): Observable<any> {
-    console.log(data);
     return this.http.post<any>(API_URL + '/newpw', data)
       .pipe(
         tap(_ => AuthService.log('newPW')),
@@ -104,8 +104,6 @@ export class AuthService {
   }
 
   update(data: any): Observable<any> {
-    console.log("UPDATE!!");
-    console.log(data);
     return this.http.post<any>(API_URL + '/update', data)
       .pipe(
         tap(_ => AuthService.log('updating')),
