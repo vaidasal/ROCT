@@ -37,8 +37,8 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def get_octcsv(db: Session, skip: int = 0, limit: int = 100):
     data = db.query(users.OctCSV).offset(skip).limit(limit).all()
-
     return data
+
 
 def create_user(db: Session, user: user.UserUpdate):
     hashed_password = security.get_password_hash(user.password)

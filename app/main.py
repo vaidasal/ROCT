@@ -49,14 +49,17 @@ async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends
     reader = OctCsvReader()
     currPath = os.getcwd()
     (fileList, detailList) = reader.getCSVNameDetailFromDir(os.path.join(currPath, "data"))
+
     for n in range(len(fileList)):
 
-        #check if detail["SeamID"] already in DB
-
-        data = reader.readTablesFromCSV(fileList[n])
-        detailList[n]["userid"] = userid
-        data["fileinfo"] = detailList[n]
-        dataList.append(data)
+        filesInDb = db.execute(f"SELECT filename FROM octcsv WHERE filename = '{detailList[n]['filename']}'").first()
+        if not filesInDb:
+            # File wasnt imported yet
+            print(f"importing: {detailList[n]['filename']}")
+            data = reader.readTablesFromCSV(fileList[n])
+            detailList[n]["userid"] = userid
+            data["fileinfo"] = detailList[n]
+            dataList.append(data)
 
     for data in dataList:
         info = data['fileinfo']

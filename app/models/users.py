@@ -26,6 +26,7 @@ class OctCSV(Base):
     seamid = Column(Integer, nullable=False)
     linenumber = Column(String)
     type = Column(String)
+    filename = Column(String)
     datetime = Column(DateTime)
     userid = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
 

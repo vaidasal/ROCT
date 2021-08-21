@@ -80,11 +80,11 @@ class OctCsvReader():
             if len(sp) == 4:
                 # old standard
                 dt = datetime.strptime(f"{sp[2]} {sp[3].rsplit('.', 1)[0]}", "%Y-%m-%d %H_%M_%S.%f")
-                sm = {"status": sp[0], "seamid": random.randrange(1000, 10000), "linenumber": sp[1], "datetime": str(dt)}
+                sm = {"status": sp[0], "seamid": random.randrange(1000, 10000), "linenumber": sp[1], "datetime": str(dt), "filename": f}
             else:
                 # new standard
                 dt = datetime.strptime(f"{sp[3]} {sp[4].rsplit('.', 1)[0]}", "%Y-%m-%d %H_%M_%S.%f")
-                sm = {"status": sp[0], "seamid": sp[1], "linenumber": sp[2], "datetime": str(dt)}
+                sm = {"status": sp[0], "seamid": sp[1], "linenumber": sp[2], "datetime": str(dt), "filename": f}
             fileDetail.append(sm)
 
         # fileList=[{"Status": "OK", "LineNumber": "W888"...}, {"Status": "OK",...}]
