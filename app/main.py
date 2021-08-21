@@ -53,7 +53,8 @@ async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends
     for n in range(len(fileList)):
 
         filesInDb = db.execute(f"SELECT filename FROM octcsv WHERE filename = '{detailList[n]['filename']}'").first()
-        if not filesInDb:
+        #add not to turn filter on
+        if filesInDb:
             # File wasnt imported yet
             print(f"importing: {detailList[n]['filename']}")
             data = reader.readTablesFromCSV(fileList[n])
@@ -68,9 +69,10 @@ async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends
         for key in keys:
             dkey = data[key].keys()
             print(data[key]["seam"])
-            type = "Point" if len(dkey) == 2 else "Line"
+            type = "Point" if len(dkey) == 3 else "Line"
             tData = info
             tData["linenumber"] = data[key]["seam"]
+            tData["grouporder"] = data[key]["groupOrder"]
             tData["type"] = type
             tdata = OctCSV(**tData)
             id = crud.createEntry(db, tdata)

@@ -23,7 +23,7 @@ export interface OctCSV {
 })
 export class OctcsvComponent implements OnInit {
 
-  displayedColumns: string[] = ['id','status','seamid','linenumber','type','time','userid'];
+  displayedColumns: string[] = ['id','status','seamid','linenumber','type','time','userid', 'grouporder'];
   dataSource!: MatTableDataSource<OctCSV>;
 
   @ViewChild('paginator') paginator!: MatPaginator;

@@ -28,6 +28,7 @@ class OctCSV(Base):
     type = Column(String)
     filename = Column(String)
     datetime = Column(DateTime)
+    grouporder = Column(Integer)
     userid = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
 
     def __repr__(self):

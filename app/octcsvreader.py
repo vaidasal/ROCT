@@ -27,6 +27,7 @@ class OctCsvReader():
         # Messlinien/Punktmessung
         dataDict = {}
         dataLen = len(nanRowList)
+        groupOrder = 0
 
         for n in range(dataLen):
 
@@ -49,6 +50,8 @@ class OctCsvReader():
                     dataDict[f"T{n}"]["P"] = pd.DataFrame([lst[0].split(";") for lst in seamData], columns=cols).drop(
                         [0]).to_json(orient="table")
                     dataDict[f"T{n}"]["seam"] = seam[6:]
+                    dataDict[f"T{n}"]["groupOrder"] = groupOrder
+                    groupOrder += 1
             else:
                 # its a line
                 if n < dataLen - 2:
@@ -62,6 +65,8 @@ class OctCsvReader():
                     dataDict[f"T{n}"]["L2"] = pd.DataFrame([lst[0].split(";") for lst in seamData2], columns=cols2).drop(
                         [0,1]).to_json(orient="table")
                     dataDict[f"T{n}"]["seam"] = seam[6:]
+                    dataDict[f"T{n}"]["groupOrder"] = groupOrder
+                    groupOrder += 1
 
         # dataDict={"T1":{"P":table}, "T2": {"L1":table1, "L2":table2}}
         return dataDict
