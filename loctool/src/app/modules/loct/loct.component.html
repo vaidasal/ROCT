@@ -1,1 +1,29 @@
-<app-octcsv></app-octcsv>
+<mat-drawer-container>
+    <mat-drawer #drawer class="sidenav" mode="side" opened="true">
+        <div layout="column">
+            <div layout_md="row">
+                <button mat-button routerLink="/home/loct/data" mat-menu-item><h3>Database</h3></button>
+            </div>
+            <div layout_md="row">
+                <button mat-button routerLink="/home/loct/entry" mat-menu-item><h3>Data Entry</h3></button>
+            </div>
+        </div>
+        
+        
+    </mat-drawer>
+  
+    <div class="sidenav-content">
+        <div layout="column" class="content-col">
+
+            <div flex layout_md="row">
+                <router-outlet></router-outlet>
+
+            </div>
+        </div>
+        
+        
+    
+    </div>
+  
+  </mat-drawer-container>
+

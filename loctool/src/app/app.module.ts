@@ -29,6 +29,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatMenuModule} from '@angular/material/menu';
 import { HomeModule } from './modules/home/home.module';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import { SidenavService } from './services/sidenav.service';
 
 @NgModule({
   declarations: [
@@ -62,11 +63,11 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatPaginatorModule,
     MatProgressBarModule,
   ],
-  providers: [
+  providers: [SidenavService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
-      multi: true
+      multi: true,
     }
   ],
   bootstrap: [AppComponent]

@@ -3,6 +3,7 @@
 from datetime import timedelta
 from typing import List, Any
 from pydantic.networks import EmailStr
+from pydantic import Json
 from sqlalchemy.orm import Session
 
 from fastapi import Depends, FastAPI, HTTPException, Body
@@ -11,6 +12,7 @@ from fastapi.encoders import jsonable_encoder
 
 import random
 import os
+import json
 
 
 from dependencies import authenticate_user, get_db, get_current_user, is_valid_user, is_valid_admin
@@ -21,7 +23,7 @@ from schema.token import Token
 from schema.user import User, UserUpdate, UserID, UserUpdateAll
 from schema.octcsv import OctCSV
 import models
-from models.users import CsvData
+from models.models import CsvData, OctCSV, OCTPar, LaserPar
 from octcsvreader import OctCsvReader
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -40,7 +42,37 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"])
 
-from models.users import OctCSV
+@app.post("/addparameters", dependencies=[Depends(is_valid_user)])
+async def addParameter(db: Session = Depends(get_db), current_user: User = Depends(get_current_user), form_data: dict = Body(None)):
+    userid = current_user.id
+    chip = json.loads(form_data["chipForm"][0]["chp"])
+    chip.remove("Start")
+    for c in range(len(chip)):
+        s = chip[c].split(' ')
+        data = form_data[s[0].lower()][int(s[1])]
+        for key in data.keys():
+            data[key] = data[key] if data[key] != "" else None
+        data["scantype"] = s[0].lower()
+        data["grouporder"] = c
+        data["userid"] = userid
+        data = OCTPar(**data)
+        db.add(data)
+    laser = form_data["laser"][0]
+    laser["userid"] = userid
+    for key in laser.keys():
+        laser[key] = laser[key] if laser[key] != "" else None
+    laserData = LaserPar(**laser)
+    db.add(laserData)
+    db.commit()
+
+@app.post("/postparamtable", dependencies=[Depends(is_valid_user)])
+async def paramTable(db: Session = Depends(get_db), cols: list = Body(None)):
+    col = "id, "+", ".join(cols)
+    tableData = db.execute(f"SELECT {col} FROM octpar").all()
+    print(tableData)
+    return tableData
+
+
 
 @app.get("/refresh", dependencies=[Depends(is_valid_user)])
 async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
@@ -244,5 +276,5 @@ def delete_item(
     user = crud.get_user(db=db, user_id=id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    removed_user = crud.remove(db=db, type=models.users.User, id=id)
+    removed_user = crud.remove(db=db, type=models.models.User, id=id)
     return removed_user

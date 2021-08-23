@@ -1,0 +1,279 @@
+<div flex layout_md="row">
+    <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
+    <button mat-button (click)="addParallel()">Add Parallel</button>
+    <button mat-button (click)="addCross()">Add Cross</button>
+    <button mat-button (click)="addPoint()">Add Point</button>
+</div>
+
+
+
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+
+    <div class="container mat-elevation-z8">
+        
+        <mat-form-field class="chip-list" appearance="fill">
+            <mat-label>Select Scan Order</mat-label>
+            <mat-chip-list
+            class="chip"
+            cdkDropList 
+            cdkDropListOrientation="horizontal"
+            (cdkDropListDropped)="drop($event)">
+            <mat-chip
+              class="box"
+              cdkDrag
+              *ngFor="let chip of chips">
+              {{chip}}<mat-icon>arrow_right_alt</mat-icon>
+            </mat-chip>
+          </mat-chip-list>
+        </mat-form-field>
+
+        
+        <ng-container formArrayName="laser">
+            <ng-container *ngFor="let laserForm of laser.controls; let i = index">
+                <h3>Laser Parameters</h3>
+                <mat-divider></mat-divider>
+                <div [formGroupName]="i">
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Seam ID</mat-label>
+                        <input  matInput class="right-align" formControlName="seam_id">
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Seam Length</mat-label>
+                        <input  matInput class="right-align" formControlName="seam_length">
+                        <span matSuffix class="in_suffix"> mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Speed</mat-label>
+                        <input matInput class="right-align" formControlName="speed">
+                        <span matSuffix class="in_suffix"> m/min</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Step Size OCT-Tester</mat-label>
+                        <input matInput class="right-align" formControlName="step_size_oct_tester">
+                        <span matSuffix class="in_suffix"> μm/Step</span>
+                    </mat-form-field>
+
+                </div>
+            </ng-container>
+        </ng-container>
+
+
+        <ng-container formArrayName="parallel">
+            <ng-container *ngFor="let parallelForm of parallel.controls; let i = index">
+                <h3 style="display: inline-block">Parallel Scan {{i}}</h3>
+                <button style="display: inline-block; float: right" mat-button (click)="deleteParallel(i)"><mat-icon>clear</mat-icon></button>
+                <mat-divider></mat-divider>
+                <div [formGroupName]="i">
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Frequency</mat-label>
+                        <input matInput class="right-align" formControlName="frequency">
+                        <span matSuffix class="in_suffix">kHz</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Points per Line</mat-label>
+                        <input matInput class="right-align" formControlName="points_per_line">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Line Length</mat-label>
+                        <input matInput class="right-align" formControlName="line_length">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Extend Points</mat-label>
+                        <input matInput class="right-align" formControlName="extend_points">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Reference Points</mat-label>
+                        <input matInput class="right-align" formControlName="reference_points">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Extend Reference Points</mat-label>
+                        <input matInput class="right-align" formControlName="extend_reference_points">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>lag (xy)</mat-label>
+                        <input matInput class="right-align" formControlName="lag_xy">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Start Coordinate X</mat-label>
+                        <input matInput class="right-align" formControlName="x_start">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>End Coordinate X</mat-label>
+                        <input matInput class="right-align" formControlName="x_end">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Start Coordinate Y</mat-label>
+                        <input matInput class="right-align" formControlName="y_start">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>End Coordinate Y</mat-label>
+                        <input matInput class="right-align" formControlName="y_end">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Reference Coordinate X</mat-label>
+                        <input matInput class="right-align" formControlName="x_ref_coordinate">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Reference Coordinate Y</mat-label>
+                        <input matInput class="right-align" formControlName="y_ref_coordinate">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Jump Speed</mat-label>
+                        <input matInput class="right-align" formControlName="jump_speed">
+                        <span matSuffix class="in_suffix">mm/μs</span>
+                    </mat-form-field>
+
+                </div>
+            </ng-container>
+        </ng-container>
+
+        <ng-container formArrayName="cross">
+            <ng-container *ngFor="let crossForm of cross.controls; let i = index">
+                <h3 style="display: inline-block">Cross Scan {{i}}</h3>
+                <button style="display: inline-block; float: right" mat-button (click)="deleteCross(i)"><mat-icon>clear</mat-icon></button>
+                <mat-divider></mat-divider>
+                <div [formGroupName]="i">
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Frequency</mat-label>
+                        <input matInput class="right-align" formControlName="frequency">
+                        <span matSuffix class="in_suffix">kHz</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Points per Line</mat-label>
+                        <input matInput class="right-align" formControlName="points_per_line">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Line Length</mat-label>
+                        <input matInput class="right-align" formControlName="line_length">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Extend Points</mat-label>
+                        <input matInput class="right-align" formControlName="extend_points">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>lag (xy)</mat-label>
+                        <input matInput class="right-align" formControlName="lag_xy">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Start Coordinate X</mat-label>
+                        <input matInput class="right-align" formControlName="x_start">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>End Coordinate X</mat-label>
+                        <input matInput class="right-align" formControlName="x_end">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Start Coordinate Y</mat-label>
+                        <input matInput class="right-align" formControlName="y_start">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>End Coordinate Y</mat-label>
+                        <input matInput class="right-align" formControlName="y_end">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Jump Speed</mat-label>
+                        <input matInput class="right-align" formControlName="jump_speed">
+                        <span matSuffix class="in_suffix">mm/μs</span>
+                    </mat-form-field>
+
+                    <button mat-button (click)="deleteCross(i)">Delete</button>
+
+                </div>
+            </ng-container>
+        </ng-container>
+
+
+        <ng-container formArrayName="point">
+            <ng-container *ngFor="let pointForm of point.controls; let i = index">
+                <h3 style="display: inline-block;">Point Scan {{i}}</h3>
+                <button style="display: inline-block; float: right" mat-button (click)="deletePoint(i)"><mat-icon>clear</mat-icon></button>
+                <mat-divider></mat-divider>
+                <div [formGroupName]="i">
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Frequency</mat-label>
+                        <input matInput class="right-align" formControlName="frequency">
+                        <span matSuffix class="in_suffix">kHz</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Points per Interval</mat-label>
+                        <input matInput class="right-align" formControlName="points_per_interval">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Extend Points</mat-label>
+                        <input matInput class="right-align" formControlName="extend_points">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Reference Points</mat-label>
+                        <input matInput class="right-align" formControlName="reference_points">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Extend Reference Points</mat-label>
+                        <input matInput class="right-align" formControlName="extend_reference_points">
+                        <span matSuffix class="in_suffix"></span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>X Coordinate</mat-label>
+                        <input matInput class="right-align" formControlName="x_start">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Y Coordinate</mat-label>
+                        <input matInput class="right-align" formControlName="y_start">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Reference Coordinate X</mat-label>
+                        <input matInput class="right-align" formControlName="x_ref_coordinate">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Reference Coordinate Y</mat-label>
+                        <input matInput class="right-align" formControlName="y_ref_coordinate">
+                        <span matSuffix class="in_suffix">mm</span>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Jump Speed</mat-label>
+                        <input matInput class="right-align" formControlName="jump_speed">
+                        <span matSuffix class="in_suffix">mm/μs</span>
+                    </mat-form-field>
+
+                    <button mat-button (click)="deletePoint(i)">Delete</button>
+
+                </div>
+            </ng-container> 
+        </ng-container>
+
+
+        <button mat-button type="submit">Get</button>
+
+
+    </div>
+</form>

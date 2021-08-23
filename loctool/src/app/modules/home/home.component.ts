@@ -27,8 +27,6 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/login']).then(_ => console.log('Logout'));
   }
 
-  refresh(): void {
-    this.dataService.getRefreshCSV().subscribe((data: any) => {console.log(data)});;
-  }
+  
 
 }

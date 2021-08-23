@@ -31,4 +31,19 @@ export class DataService {
     return this.http.get<any>(API_URL + '/refresh').pipe(tap(res => console.log(res)));
   }
 
+  saveLaserParams(form_data: any): Observable<any> {
+    return this.http.post<any>(API_URL + '/addparameters', form_data)
+      .pipe(
+        tap(_ => console.log('saved'))
+      );
+  }
+
+  postParamTable(cols: any): Observable<any> {
+    return this.http.post<any>(API_URL + '/postparamtable', cols)
+      .pipe(
+        tap(_ => console.log('requested'))
+      );
+  }
+
+
 }

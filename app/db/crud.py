@@ -4,7 +4,7 @@ from typing import Any, Dict, Union, TypeVar, Optional
 from pydantic import BaseModel
 from fastapi.encoders import jsonable_encoder
 
-from models import users
+from models import models
 from schema import user
 import security
 from db.base_class import Base
@@ -12,14 +12,14 @@ from db.database import engine
 
 
 def get_user(db: Session, user_id: int):
-    return db.query(users.User).filter(users.User.id == user_id).first()
+    return db.query(models.User).filter(models.User.id == user_id).first()
 
 
 def get_user_by_email(email: str) -> Optional[user.UserUpdate]:
     Session = sessionmaker(engine)
     session = Session()
     try:
-        return session.query(users.User).filter(users.User.email == email).first()
+        return session.query(models.User).filter(models.User.email == email).first()
     finally:
         session.close()
 
@@ -27,22 +27,22 @@ def get_user_by_id(id: int) -> Optional[user.UserUpdate]:
     Session = sessionmaker(engine)
     session = Session()
     try:
-        return session.query(users.User).filter(users.User.id == id).first()
+        return session.query(models.User).filter(models.User.id == id).first()
     finally:
         session.close()
 
 
 def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(users.OctCSV).offset(skip).limit(limit).all()
+    return db.query(models.User).offset(skip).limit(limit).all()
 
 def get_octcsv(db: Session, skip: int = 0, limit: int = 100):
-    data = db.query(users.OctCSV).offset(skip).limit(limit).all()
+    data = db.query(models.OctCSV).offset(skip).limit(limit).all()
     return data
 
 
 def create_user(db: Session, user: user.UserUpdate):
     hashed_password = security.get_password_hash(user.password)
-    db_user = users.User(
+    db_user = models.User(
         email=user.email, password=hashed_password,
         firstname=user.firstname, lastname=user.lastname, scope=user.scope
     )

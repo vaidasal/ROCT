@@ -1,0 +1,15 @@
+  .sidenav-content {
+    display: flex;
+    height: 100%;
+    width: 100%;
+
+    justify-content:stretch;
+  }
+  
+  .sidenav {
+    padding: 20px;
+  }
+
+  .content-col {
+    width: 100%;
+  }

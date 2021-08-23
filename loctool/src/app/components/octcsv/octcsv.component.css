@@ -23,9 +23,6 @@ th {
     text-align: right!important;
 }
 
-
-
-
 .mat-row:hover .mat-cell {
 border-color: currentColor;
 }
