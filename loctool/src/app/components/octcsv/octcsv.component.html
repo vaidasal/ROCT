@@ -1,0 +1,65 @@
+<div class="container">
+    <mat-form-field>
+        <input matInput (keyup)="applyFilter($any($event.target).value)" placeholder="Filter">
+    </mat-form-field>
+    
+    <div class="table-container mat-elevation-z8">
+    <mat-table [dataSource]="dataSource" class="OctCSV">
+    
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th mat-header-cell id="idHead" *matHeaderCellDef> ID </th>
+          <td mat-cell id="idCol" *matCellDef="let octcsv"> {{octcsv.id}} </td>
+        </ng-container>
+      
+        <!-- status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef> Status </th>
+          <td mat-cell *matCellDef="let octcsv"> {{octcsv.status}} </td>
+        </ng-container>
+      
+        <!-- seamid Column -->
+        <ng-container matColumnDef="seamid">
+          <th mat-header-cell *matHeaderCellDef> SeamID </th>
+          <td mat-cell *matCellDef="let octcsv"> {{octcsv.seamid}} </td>
+        </ng-container>
+      
+        <!-- linenumber Column -->
+        <ng-container matColumnDef="linenumber">
+          <th mat-header-cell *matHeaderCellDef> LineNumber </th>
+          <td mat-cell *matCellDef="let octcsv"> {{octcsv.linenumber}} </td>
+        </ng-container>
+
+        <!-- type Column -->
+        <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> Type </th>
+            <td mat-cell *matCellDef="let octcsv"> {{octcsv.type}} </td>
+        </ng-container>
+
+        <!-- time Column -->
+        <ng-container matColumnDef="time">
+            <th mat-header-cell *matHeaderCellDef> Time </th>
+            <td mat-cell *matCellDef="let octcsv"> {{octcsv.datetime.replace("T", " ").substring(0,19) }} </td>
+          </ng-container>
+
+        <!-- userid Column -->
+        <ng-container matColumnDef="userid">
+            <th mat-header-cell *matHeaderCellDef> UserID </th>
+            <td mat-cell *matCellDef="let octcsv"> {{octcsv.userid}} </td>
+          </ng-container>
+
+        <!-- grouporder Column -->
+        <ng-container matColumnDef="grouporder">
+          <th mat-header-cell *matHeaderCellDef> GroupOrder </th>
+          <td mat-cell *matCellDef="let octcsv"> {{octcsv.grouporder}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="openDialog(row)"></tr>
+    
+    </mat-table>
+    
+    <mat-paginator #paginator [pageSizeOptions]="[20, 50, 100]"></mat-paginator>
+    </div>
+    </div>
+      

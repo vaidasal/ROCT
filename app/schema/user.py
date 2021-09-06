@@ -8,7 +8,7 @@ class UserBase(BaseModel):
 class User(UserBase):
     firstname: Optional[str] = None
     lastname: Optional[str] = None
-    scope: Optional[list] = None
+    scope: Optional[str] = None
 
     class Config:
         orm_mode = True
@@ -16,3 +16,9 @@ class User(UserBase):
 
 class UserUpdate(User):
     password: str
+
+class UserID(User):
+    id: Optional[int] = None
+
+class UserUpdateAll(UserID):
+    new_password : str

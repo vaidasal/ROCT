@@ -1,0 +1,92 @@
+<mat-expansion-panel class="expansion_panel">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Selected Column
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <div cdkDropListGroup>
+
+                <div class="example-container">
+                    <h2>Available Columns</h2>
+                
+                    <div
+                      cdkDropList
+                      cdkDropListOrientation="horizontal"
+                      [cdkDropListData]="bag1"
+                      class="example-list"
+                      cdkDropListSortingDisabled
+                      (cdkDropListDropped)="drop($event)">
+                      <div class="example-box" *ngFor="let bag of bag1" cdkDrag>{{bag}}</div>
+                    </div>
+                  </div>
+          
+                <div class="example-container">
+                
+                    <div
+                        cdkDropList
+                        cdkDropListOrientation="horizontal"
+                        [cdkDropListData]="bag2"
+                        class="example-list"
+                        cdkDropListSortingDisabled
+                        (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let bag of bag2" cdkDrag>{{bag}}</div>
+                    </div>
+                </div>
+
+                <div class="example-container">
+                
+                    <div
+                        cdkDropList
+                        cdkDropListOrientation="horizontal"
+                        [cdkDropListData]="bag3"
+                        class="example-list"
+                        cdkDropListSortingDisabled
+                        (cdkDropListDropped)="drop($event)">
+                        <div class="example-box" *ngFor="let bag of bag3" cdkDrag>{{bag}}</div>
+                    </div>
+                </div>
+
+                <div class="example-container">
+                    <h2>Table Columns</h2>
+                    
+                
+                    <div
+                      cdkDropList
+                      cdkDropListOrientation="horizontal"
+                      [cdkDropListData]="basket"
+                      class="example-list"
+                      (cdkDropListDropped)="drop($event)">
+                      <div class="example-box" *ngFor="let item of basket" cdkDrag>{{item}}</div>
+                    </div>
+                  </div>
+
+    </div>
+
+    
+
+</mat-expansion-panel>
+
+
+<div class="container">
+    <mat-form-field>
+        <input matInput (keyup)="applyFilter($any($event.target).value)" placeholder="Filter">
+    </mat-form-field>
+    
+    <div class="table-container mat-elevation-z8">
+    <mat-table [dataSource]="dataSource" class="parTable" matSort>
+    
+        <ng-container [matColumnDef]="bask" *ngFor="let bask of basket">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{bask}} </th>
+            <td mat-cell *matCellDef="let element"> {{element[bask]}} </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="basket"></tr>
+        <tr mat-row *matRowDef="let row; columns: basket;" (click)="openDialog(row)"></tr>
+    
+    </mat-table>
+    
+    <mat-paginator #paginator_partable [pageSizeOptions]="[20, 50, 100]"></mat-paginator>
+    </div>
+</div>
+

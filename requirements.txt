@@ -4,3 +4,4 @@ passlib[bcrypt]
 psycopg2
 alembic
 pydantic[email]
+pandas

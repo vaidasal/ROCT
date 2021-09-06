@@ -33,4 +33,4 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
-    scopes: List[str] = None
+    scopes: Optional[str] = None

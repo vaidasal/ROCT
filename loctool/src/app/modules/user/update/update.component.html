@@ -1,0 +1,55 @@
+<div mat-dialog-content>
+    <div class="example-loading-shade"
+         *ngIf="isLoadingResults">
+      <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+      <form [formGroup]="updateForm" (ngSubmit)="onFormSubmit()">
+        <h2>UPDATE USER DATA</h2>
+        <mat-form-field class="example-full-width">
+          <label>
+            <input matInput placeholder="{{ row.data.email }}" formControlName="email"
+                   [errorStateMatcher]="matcher">
+          </label>
+          <mat-error>
+            <span *ngIf="!updateForm.get('email')?.valid && updateForm.get('email')?.touched">Please enter Email</span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <label>
+            <input type="password" matInput placeholder="new password" formControlName="new_password"
+                   [errorStateMatcher]="matcher">
+          </label>
+          <mat-error>
+            <span *ngIf="!updateForm.get('new_password')?.valid">Please enter Password</span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <label>
+            <input matInput placeholder="{{ row.data.firstname }}" formControlName="firstname"
+                   [errorStateMatcher]="matcher">
+          </label>
+          <mat-error>
+            <span *ngIf="!updateForm.get('firstname')?.valid && updateForm.get('firstname')?.touched">Please enter Firstname</span>
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <label>
+              <input matInput placeholder="{{ row.data.lastname}}" formControlName="lastname"
+                     [errorStateMatcher]="matcher">
+            </label>
+            <mat-error>
+              <span *ngIf="!updateForm.get('lastname')?.valid && updateForm.get('lastname')?.touched">Please enter Lastname</span>
+            </mat-error>
+        </mat-form-field>
+        <div layout="row" align="center">
+        <mat-radio-group matRadio aria-label="Select an option" formControlName="scope">
+            <mat-radio-button value="admin" >Administrator</mat-radio-button>
+            <mat-radio-button value="user" >User</mat-radio-button>
+        </mat-radio-group>
+        </div>
+        <div class="button-row" align="center">
+            <button type="button" mat-flat-button color="warn" (click)="onDelete()">Delete User</button>
+            <button type="submit" mat-flat-button color="primary"><mat-icon>how_to_reg</mat-icon>Update</button>
+        </div>
+      </form>
+</div>

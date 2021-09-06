@@ -15,7 +15,7 @@ from config import settings
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="token",
-    scopes={"Administrator": "Full Access", "User": "Limited Access"},
+    scopes={"admin": "Full Access", "user": "Limited Access"},
 )
 
 async def get_current_user(security_scopes: SecurityScopes, token: str = Depends(oauth2_scheme)):
@@ -35,23 +35,29 @@ async def get_current_user(security_scopes: SecurityScopes, token: str = Depends
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
-        token_scopes = payload.get("scopes", [])
+        token_scopes = payload.get("scopes", "")
         token_data = TokenData(scopes=token_scopes, username=username)
     except (JWTError, ValidationError):
         raise credentials_exception
     user = crud.get_user_by_email(email=token_data.username)
+
     if user is None:
         raise credentials_exception
-    for scope in security_scopes.scopes:
-        if scope not in token_data.scopes:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Not enough permissions",
-                headers={"WWW-Authenticate": authenticate_value},
-            )
+
+    if token_data.scopes not in "".join(security_scopes.scopes):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not enough permissions",
+            headers={"WWW-Authenticate": authenticate_value},
+        )
+
     return user
 
-async def get_current_active_user(current_user: User = Security(get_current_user, scopes=[])):
+
+async def is_valid_user(current_user: User = Security(get_current_user, scopes=["user", "admin"])):
+    return current_user
+
+async def is_valid_admin(current_user: User = Security(get_current_user, scopes="admin")):
     return current_user
 
 def authenticate_user(db: Session, email: str, password: str) -> Optional[User]:
