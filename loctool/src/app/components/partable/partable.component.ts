@@ -1,9 +1,11 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { DataService } from 'src/app/services/data.service';
+import { UpdateComponent } from '../update/update.component';
 
 
 @Component({
@@ -13,20 +15,19 @@ import { DataService } from 'src/app/services/data.service';
 })
 export class PartableComponent implements OnInit {
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService, private dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.getTable()
   }
   
   dataSource!: MatTableDataSource<any>;
-  @ViewChild('paginator') paginator!: MatPaginator;
+  @ViewChild('paginator_partable') mpaginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   bag1 = [
     'points_per_line',
     'points_per_interval',
-    'line_length',
     'extend_points',
     'frequency',
   ];
@@ -47,15 +48,21 @@ export class PartableComponent implements OnInit {
 
   bag3 = [
     'seam_length',
-    'speed',
     'step_size_oct_tester',
     'reference_points',
     'extend_reference_points',
     'lag_xy',
+    'status',
+    'linenumber',
+    'datetime',
+    'userid',
+    'grouporder',
+    'firstname',
+    'lastname',
   ];
 
   basket: string[] = [
-    'id',
+    'seamid', 'type', 'line_length'
   ];
 
   drop(event: CdkDragDrop<string[]>) {
@@ -74,7 +81,7 @@ export class PartableComponent implements OnInit {
     this.dataService.postParamTable(this.basket).subscribe((data) => {
       console.log(data);
       this.dataSource = new MatTableDataSource(data);
-      this.dataSource.paginator = this.paginator;
+      this.dataSource.paginator = this.mpaginator;
       this.dataSource.sort = this.sort;
   })}
 
@@ -86,6 +93,9 @@ export class PartableComponent implements OnInit {
   
   openDialog(row) {
     console.log(row);
+    this.dialog.open(UpdateComponent, {
+      width: '500px', data: {data: row}
+    });
   }
 
 

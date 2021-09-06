@@ -21,7 +21,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 @NgModule({
   declarations: [
     DataentryComponent,
-    LaserentryComponent,
     OctparallelentryComponent,
     OctpointentryComponent,
     OctcrossentryComponent,

@@ -18,6 +18,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSortModule } from '@angular/material/sort';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { UpdateComponent } from 'src/app/components/update/update.component';
+import { LaserentryComponent } from 'src/app/components/laserentry/laserentry.component';
 
 
 @NgModule({
@@ -25,6 +27,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
     DataComponent,
     OctcsvComponent,
     PartableComponent,
+    UpdateComponent,
+    LaserentryComponent,
   ],
   imports: [
     CommonModule,

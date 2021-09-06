@@ -27,8 +27,13 @@ export class DataService {
   }
 
   getRefreshCSV(): Observable<any> {
-    console.log("get!!")
+    console.log("Refresh!!")
     return this.http.get<any>(API_URL + '/refresh').pipe(tap(res => console.log(res)));
+  }
+
+  getSettings(): Observable<any> {
+    console.log("get Settings!!")
+    return this.http.get<any>(API_URL + '/settings').pipe(tap(res => console.log(res)));
   }
 
   saveLaserParams(form_data: any): Observable<any> {
@@ -41,7 +46,7 @@ export class DataService {
   postParamTable(cols: any): Observable<any> {
     return this.http.post<any>(API_URL + '/postparamtable', cols)
       .pipe(
-        tap(_ => console.log('requested'))
+        tap(_ => console.log('ParamTableRequest'))
       );
   }
 

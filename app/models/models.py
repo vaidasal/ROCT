@@ -65,6 +65,7 @@ class OCTPar(Base):
     __tablename__ = 'octpar'
     id = Column(Integer, primary_key=True)
     octcsv_id = Column(Integer, ForeignKey("octcsv.id"))
+    laser_id = Column(Integer, ForeignKey("laserpar.id"))
     userid = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
     octcsv = relationship("OctCSV", backref=backref("octpar", uselist=False, passive_deletes=True))
     frequency = Column(Float)
@@ -87,4 +88,30 @@ class OCTPar(Base):
 
     def __repr__(self):
         return 'octcsv_id: {}'.formatpostgre(self.octcsv_id)
+
+class Settings(Base):
+    __tablename__ = 'settings'
+    id = Column(Integer, primary_key=True)
+    userid = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
+    frequency = Column(Float)
+    points_per_line = Column(Integer)
+    points_per_interval = Column(Integer)
+    line_length = Column(Float)
+    extend_points = Column(Integer)
+    reference_points = Column(Integer)
+    extend_reference_points = Column(Integer)
+    lag_xy = Column(Float)
+    x_start = Column(Float)
+    x_end = Column(Float)
+    y_start = Column(Float)
+    y_end = Column(Float)
+    x_ref_coordinate = Column(Float)
+    y_ref_coordinate = Column(Float)
+    jump_speed = Column(Float)
+    seam_length = Column(Float)
+    speed = Column(Float)
+    step_size_oct_tester = Column(Float)
+
+    def __repr__(self):
+        return 'settings_id: {}'.formatpostgre(self.id)
 

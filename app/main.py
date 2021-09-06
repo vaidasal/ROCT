@@ -5,6 +5,7 @@ from typing import List, Any
 from pydantic.networks import EmailStr
 from pydantic import Json
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 
 from fastapi import Depends, FastAPI, HTTPException, Body
 from fastapi.security import (OAuth2PasswordRequestForm)
@@ -17,7 +18,7 @@ import json
 
 from dependencies import authenticate_user, get_db, get_current_user, is_valid_user, is_valid_admin
 from config import settings
-from db import crud
+from db import crud, database
 from security import create_access_token
 from schema.token import Token
 from schema.user import User, UserUpdate, UserID, UserUpdateAll
@@ -25,6 +26,8 @@ from schema.octcsv import OctCSV
 import models
 from models.models import CsvData, OctCSV, OCTPar, LaserPar
 from octcsvreader import OctCsvReader
+
+
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -47,6 +50,16 @@ async def addParameter(db: Session = Depends(get_db), current_user: User = Depen
     userid = current_user.id
     chip = json.loads(form_data["chipForm"][0]["chp"])
     chip.remove("Start")
+
+    laser = form_data["laser"][0]
+    laser["userid"] = userid
+    for key in laser.keys():
+        laser[key] = laser[key] if laser[key] != "" else None
+    laserData = LaserPar(**laser)
+    db.add(laserData)
+    db.commit()
+    db.refresh(laserData)
+
     for c in range(len(chip)):
         s = chip[c].split(' ')
         data = form_data[s[0].lower()][int(s[1])]
@@ -55,27 +68,20 @@ async def addParameter(db: Session = Depends(get_db), current_user: User = Depen
         data["scantype"] = s[0].lower()
         data["grouporder"] = c
         data["userid"] = userid
+        data["laser_id"] = laserData.id
+        # get octcsv index for seamid und grouporder
+        #db.query(OctCSV).filter_by()
         data = OCTPar(**data)
         db.add(data)
-    laser = form_data["laser"][0]
-    laser["userid"] = userid
-    for key in laser.keys():
-        laser[key] = laser[key] if laser[key] != "" else None
-    laserData = LaserPar(**laser)
-    db.add(laserData)
     db.commit()
 
-@app.post("/postparamtable", dependencies=[Depends(is_valid_user)])
-async def paramTable(db: Session = Depends(get_db), cols: list = Body(None)):
-    col = "id, "+", ".join(cols)
-    tableData = db.execute(f"SELECT {col} FROM octpar").all()
-    print(tableData)
-    return tableData
+
 
 
 
 @app.get("/refresh", dependencies=[Depends(is_valid_user)])
 async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    print("refreshing")
     userid = current_user.id
     dataList = []
     reader = OctCsvReader()
@@ -86,7 +92,7 @@ async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends
 
         filesInDb = db.execute(f"SELECT filename FROM octcsv WHERE filename = '{detailList[n]['filename']}'").first()
         #add not to turn filter on
-        if filesInDb:
+        if not filesInDb:
             # File wasnt imported yet
             print(f"importing: {detailList[n]['filename']}")
             data = reader.readTablesFromCSV(fileList[n])
@@ -98,6 +104,7 @@ async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends
         info = data['fileinfo']
         keys = list(data.keys())
         keys.remove('fileinfo')
+        seamid = data['fileinfo']['seamid']
         for key in keys:
             dkey = data[key].keys()
             print(data[key]["seam"])
@@ -106,16 +113,39 @@ async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends
             tData["linenumber"] = data[key]["seam"]
             tData["grouporder"] = data[key]["groupOrder"]
             tData["type"] = type
+
             tdata = OctCSV(**tData)
             id = crud.createEntry(db, tdata)
             ndata = CsvData(data=data[key], octcsv_id=id)
             _ = crud.createEntry(db, ndata)
+
+            sqlstr = """SELECT l.id as l_id,o.id as o_id, o.grouporder as o_group FROM public.laserpar as l 
+                                    INNER JOIN public.octpar as o ON l.id = o.laser_id 
+                                    WHERE l.seam_id = {}"""
+            octParam = db.execute(sqlstr.format(seamid)).all()
+            if octParam:
+                print("octParam",octParam)
+                for go in octParam:
+                    print("go",go)
+                    if go[2] == tData["grouporder"]:
+                        print("go012",go[0],go[1],go[2] )
+                        sqlst = """UPDATE octpar SET octcsv_id = {} WHERE id = {}"""
+                        db.execute(sqlst.format(id, go[1]))
+                        sqlst = """UPDATE laserpar SET octcsv_id = {} WHERE id = {}"""
+                        db.execute(sqlst.format(id, go[0]))
+            db.commit()
 
     return "success"
 
 @app.get("/octcsv", dependencies=[Depends(is_valid_user)])
 async def getOctCSV(db: Session = Depends(get_db), skip: int = 0, limit: int = 100):
     data = crud.get_octcsv(db, skip=skip, limit=limit)
+    return data
+
+@app.get("/settings", dependencies=[Depends(is_valid_user)])
+async def getSettings(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    print(current_user.id)
+    data = db.execute("SELECT * FROM settings WHERE userid = {}".format(current_user.id)).first()
     return data
 
 
@@ -243,7 +273,7 @@ def read_user(user_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
 
-@app.post("/open", response_model=User, dependencies=[Depends(is_valid_user)])
+@app.post("/open", response_model=User)
 def create_user_open(user_in: UserUpdate, db: Session = Depends(get_db)) -> Any:
     """
     Create new user without the need to be logged in.
@@ -278,3 +308,29 @@ def delete_item(
         raise HTTPException(status_code=404, detail="User not found")
     removed_user = crud.remove(db=db, type=models.models.User, id=id)
     return removed_user
+
+
+@app.post("/postparamtable", dependencies=[Depends(is_valid_user)])
+async def paramTable(db: Session = Depends(get_db), cols: list = Body(None)):
+    dataBase = database.DataBase()
+    tableDict = dataBase.getColumns()
+    colsDict = {}
+    colslist = []
+    for col in cols:
+        colslist.append(str(dataBase.getTable(col, tableDict))+"."+col)
+        if dataBase.getTable(col, tableDict) in colsDict.keys():
+            colsDict[dataBase.getTable(col, tableDict)].append(col)
+        else:
+            colsDict[dataBase.getTable(col, tableDict)] = [col]
+    tableData = []
+
+    col = "laserpar.id as laser_id, octpar.id as octpar_id, " + ", ".join(colslist)
+    stri = """
+        SELECT {} FROM octcsv
+        FULL OUTER JOIN laserpar ON laserpar.seam_id = octcsv.seamid
+        FULL OUTER JOIN octpar ON octcsv.id = octpar.octcsv_id
+        FULL OUTER JOIN public.user ON octcsv.userid = public.user.id;
+    """
+    tableData.extend(db.execute(stri.format(col)).all())
+    print("table: ",tableData)
+    return tableData

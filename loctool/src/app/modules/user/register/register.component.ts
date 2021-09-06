@@ -26,7 +26,7 @@ export class RegisterComponent implements OnInit {
   password = '';
   firstname = '';
   lastname = '';
-  scopes = '';
+  scope = '';
   isLoadingResults = false;
   matcher = new MyErrorStateMatcher();
 
@@ -39,16 +39,18 @@ export class RegisterComponent implements OnInit {
       password : [null, Validators.required],
       firstname : [null, Validators.required],
       lastname : [null, Validators.required],
-      scopes : [null]
+      scope : [null]
     });
   }
 
   onFormSubmit(): void {
     this.isLoadingResults = true;
+    console.log(this.registerForm.value);
     this.authService.register(this.registerForm.value)
       .subscribe((res: any) => {
         this.isLoadingResults = false;
-        this.router.navigate(['home/user']).then(_ => this.dialogRef.close());
+        location.reload();
+        //this.router.navigate(['home/user']).then(_ => this.dialogRef.close());
       }, (err: any) => {
         console.log(err);
         this.isLoadingResults = false;

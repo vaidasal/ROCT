@@ -15,7 +15,10 @@ export class DataComponent implements OnInit {
   }
 
   refresh(): void {
-    this.dataService.getRefreshCSV().subscribe((data: any) => {console.log(data)});;
+    this.dataService.getRefreshCSV().subscribe((data: any) => {
+      console.log(data);
+      location.reload();
+    });;
   }
 
   toggleSidenav() { 
