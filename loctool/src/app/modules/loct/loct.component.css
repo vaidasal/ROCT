@@ -1,9 +1,7 @@
-  .sidenav-content {
-    display: flex;
-    height: 100%;
-    width: 100%;
-    justify-content:center;
-  }
+.sidenav-content {
+  display: flex;
+  justify-content: center;
+}
   
   .sideButton {
     text-align: center;
@@ -11,8 +9,14 @@
 
   .sidenav {
     padding: 20px;
+    display: flex;
   }
 
   .content-col {
     width: 100%;
   }
+
+.mat-drawer-container {
+  flex: 1 1;
+  height: 100%;
+}

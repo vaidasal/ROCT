@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\src",
+    "\\src\\app",
+    "\\src\\app\\modules",
+    "\\src\\app\\modules\\home",
+    "\\src\\app\\modules\\loct",
+    "\\src\\app\\modules\\loct\\data"
+  ],
+  "SelectedNode": "\\src\\app\\modules\\loct\\loct.component.css",
+  "PreviewInSolutionExplorer": false
+}

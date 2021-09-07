@@ -13,7 +13,7 @@ export class HomeComponent implements OnInit {
 
   constructor(private authService: AuthService, private router: Router, private tokenService: TokenService, private dataService: DataService) { }
 
-  title = 'LOCTool';
+  title = 'ROCTool';
   name = '';
   access = false;
 

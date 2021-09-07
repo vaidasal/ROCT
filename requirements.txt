@@ -5,3 +5,5 @@ psycopg2
 alembic
 pydantic[email]
 pandas
+uvicorn
+fastapi

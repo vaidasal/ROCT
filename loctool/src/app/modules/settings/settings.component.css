@@ -4,6 +4,7 @@
 
   .def-card {
     margin: 15pt;
+    padding: 15pt;
   }
 
   .container .mat-form-field {

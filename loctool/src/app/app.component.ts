@@ -9,7 +9,7 @@ import { SharingService } from './services/sharing.service';
 })
 export class AppComponent {
 
-  title = 'LOCTool';
+  title = 'ROCTool';
 
   loader!: boolean;
   subscription!: Subscription;
