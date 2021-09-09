@@ -9,6 +9,8 @@ import { SidenavService } from '../../services/sidenav.service';
 })
 export class LoctComponent implements OnInit {
 
+  isLinear = true;
+
   @ViewChild('drawer', { static: true }) public sidenav!: MatSidenav;
 
   constructor(private sideNavService: SidenavService) { }
@@ -18,7 +20,7 @@ export class LoctComponent implements OnInit {
       this.sidenav.toggle();
     });
 
-    this.sidenav.open();
+    this.sidenav.close();
   }
 
 }

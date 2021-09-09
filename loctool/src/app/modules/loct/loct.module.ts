@@ -10,11 +10,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatStepperModule } from '@angular/material/stepper';
+import { DataComponent } from './data/data.component';
+import { PartableComponent } from '../../components/partable/partable.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 @NgModule({
   declarations: [
     LoctComponent,
+    DataComponent,
+    PartableComponent,
   ],
   imports: [
     CommonModule,
@@ -26,6 +33,9 @@ import { MatIconModule } from '@angular/material/icon';
     MatSidenavModule,
     MatButtonModule,
     MatIconModule,
+    MatStepperModule,
+    DragDropModule,
+    MatExpansionModule,
   ]
 })
 export class LoctModule { }

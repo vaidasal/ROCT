@@ -62,7 +62,7 @@ export class PartableComponent implements OnInit {
   ];
 
   basket: string[] = [
-    'seamid', 'type', 'line_length'
+    'seamid', 'type', 'line_length',
   ];
 
   drop(event: CdkDragDrop<string[]>) {
@@ -79,7 +79,6 @@ export class PartableComponent implements OnInit {
 
   getTable() {
     this.dataService.postParamTable(this.basket).subscribe((data) => {
-      console.log(data);
       this.dataSource = new MatTableDataSource(data);
       this.dataSource.paginator = this.mpaginator;
       this.dataSource.sort = this.sort;
@@ -92,11 +91,23 @@ export class PartableComponent implements OnInit {
   }
   
   openDialog(row) {
-    console.log(row);
     this.dialog.open(UpdateComponent, {
-      width: '500px', data: {data: row}
+      data: { data: row },
     });
   }
+
+  selectedRows: any[] = [];
+
+  select(row) {
+    if (this.selectedRows.includes(row)) {
+      this.selectedRows = this.selectedRows.filter(item => item !== row)
+    } else {
+      this.selectedRows.push(row)
+    }
+    console.log(this.selectedRows)
+  }
+
+
 
 
 }

@@ -39,6 +39,9 @@ border-color: currentColor;
     padding: 15pt;
 }
 
+.mat-row.highlighted {
+  background: #999;
+}
 
   .example-list {
     max-width: 100%;

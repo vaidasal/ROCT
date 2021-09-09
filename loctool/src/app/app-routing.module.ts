@@ -7,7 +7,7 @@ import { AuthGuard } from './auth.guard';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home/loct/data', pathMatch: 'full' },
+  { path: '', redirectTo: 'home/loct', pathMatch: 'full' },
   { path: 'secure', canActivate: [ AuthGuard ], component: SecureComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

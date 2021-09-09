@@ -1,12 +1,7 @@
 <mat-drawer-container>
-    <mat-drawer #drawer class="sidenav" mode="side" opened="true">
+    <mat-drawer #drawer class="sidenav" mode="side" opened="false">
         <div layout="column">
-            <div layout_md="row">
-                <button mat-button routerLink="/home/loct/data" mat-menu-item class="sideButton"><h3>Database</h3></button>
-            </div>
-            <div layout_md="row">
-                <button mat-button routerLink="/home/loct/entry" mat-menu-item class="sideButton"><h3>Data Entry</h3></button>
-            </div>
+
         </div>
         
         
@@ -15,10 +10,21 @@
     <div class="sidenav-content">
         <div layout="column" class="content-col">
 
-            <div flex layout_md="row">
-                <router-outlet></router-outlet>
+          <div flex layout_md="row">
+            <router-outlet></router-outlet>
 
-            </div>
+            <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
+              <mat-step>
+                <ng-template matStepLabel>DATABASE</ng-template>
+                <app-data></app-data>
+              </mat-step>
+              <mat-step>
+                <ng-template matStepLabel>ANALYSIS</ng-template>
+
+              </mat-step>
+            </mat-stepper>
+
+          </div>
         </div>
         
         

@@ -4,6 +4,7 @@ import { SidenavService } from '../../../services/sidenav.service';
 
 import {CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DataService } from 'src/app/services/data.service';
+import { Router } from '@angular/router';
 
 
 
@@ -40,7 +41,7 @@ export class DataentryComponent implements OnInit {
 
 
 
-  constructor(private fb: FormBuilder, private sideNavService: SidenavService, private dataService: DataService) { }
+  constructor(private router: Router, private fb: FormBuilder, private sideNavService: SidenavService, private dataService: DataService) { }
 
   ngOnInit(): void {
     this.dataService.getSettings().subscribe((settings) => {
@@ -167,8 +168,7 @@ export class DataentryComponent implements OnInit {
       this.chipForm.removeAt(0);
       this.chipForm.push(chpForm);
       this.dataService.saveLaserParams(this.form.value).subscribe((res: any) => {
-        location.reload();
-        //this.router.navigate(['home/user']).then(_ => this.dialogRef.close());
+        this.router.navigate(['home/loct']);
       }, (err: any) => {
         console.log(err);
       });;
