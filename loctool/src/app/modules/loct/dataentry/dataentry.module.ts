@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { DataentryRoutingModule } from './dataentry-routing.module';
-import { DataentryComponent } from './dataentry.component';
-import { LaserentryComponent } from 'src/app/components/laserentry/laserentry.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
@@ -20,7 +18,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
-    DataentryComponent,
     OctparallelentryComponent,
     OctpointentryComponent,
     OctcrossentryComponent,

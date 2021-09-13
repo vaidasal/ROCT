@@ -1,0 +1,52 @@
+
+<mat-tab-group>
+  <mat-tab label="Custom Visualisation">
+    <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
+    <div cdkDropListGroup class="dropLists">
+
+      <mat-label>Parameter</mat-label>
+
+      <div cdkDropList
+           cdkDropListOrientation="vertical"
+           [cdkDropListData]="basket"
+           class="example-list"
+           (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let item of basket" cdkDrag>{{item}}</div>
+      </div>
+
+      <table class="basket-full-width">
+        <tr>
+          <td>
+            <mat-label>Left Axis</mat-label>
+
+            <div cdkDropList
+                 [cdkDropListData]="basketL"
+                 class="vertical-list"
+                 (cdkDropListDropped)="drop($event)">
+              <div class="vertical-box" *ngFor="let item of basketL" cdkDrag>{{item}}</div>
+            </div>
+          </td>
+          <td>
+            <mat-label>Right Axis</mat-label>
+
+            <div cdkDropList
+                 [cdkDropListData]="basketR"
+                 class="vertical-list"
+                 (cdkDropListDropped)="drop($event)">
+              <div class="vertical-box" *ngFor="let item of basketR" cdkDrag>{{item}}</div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+
+
+  </mat-tab>
+  <mat-tab label="Dashboard">
+    <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
+  </mat-tab>
+  
+</mat-tab-group>
+
+

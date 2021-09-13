@@ -13,6 +13,7 @@ from db import crud, database
 from schema.user import User
 from models.models import CsvData, OctCSV, OCTPar, LaserPar
 from octcsvreader import OctCsvReader
+from mqtt import Mqtt
 
 
 router = APIRouter()
@@ -56,11 +57,14 @@ async def refreshCSV(db: Session = Depends(get_db), current_user: User = Depends
     currPath = os.getcwd()
     (fileList, detailList) = reader.getCSVNameDetailFromDir(os.path.join(currPath, "data"))
 
+    mqtt = Mqtt()
+    mqtt.sendMessage("{just a test message}")
+
     for n in range(len(fileList)):
 
         filesInDb = db.execute(f"SELECT filename FROM octcsv WHERE filename = '{detailList[n]['filename']}'").first()
         #add not to turn filter on
-        if not filesInDb:
+        if filesInDb:
             # File wasnt imported yet
             print(f"importing: {detailList[n]['filename']}")
             data = reader.readTablesFromCSV(fileList[n])

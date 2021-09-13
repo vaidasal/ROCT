@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/services/data.service';
 import { UpdateComponent } from '../update/update.component';
 
@@ -19,6 +20,7 @@ export class PartableComponent implements OnInit {
 
   ngOnInit(): void {
     this.getTable()
+    this.subscription = this.dataService.currentParameter.subscribe(parameter => this.basket = parameter)
   }
   
   dataSource!: MatTableDataSource<any>;
@@ -65,6 +67,8 @@ export class PartableComponent implements OnInit {
     'seamid', 'type', 'line_length',
   ];
 
+  subscription?: Subscription;
+
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -74,6 +78,7 @@ export class PartableComponent implements OnInit {
                         event.previousIndex,
                         event.currentIndex);
     }
+    this.dataService.changeParameter(this.basket);
     this.getTable();
   }
 
@@ -107,7 +112,8 @@ export class PartableComponent implements OnInit {
     console.log(this.selectedRows)
   }
 
-
-
+  ngOnDestroy() {
+    this.subscription?.unsubscribe();
+  }
 
 }

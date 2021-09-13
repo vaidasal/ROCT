@@ -1,7 +1,7 @@
 <mat-drawer-container>
     <mat-drawer #drawer class="sidenav" mode="side" opened="false">
         <div layout="column">
-
+          <app-filter></app-filter>
         </div>
         
         
@@ -11,16 +11,20 @@
         <div layout="column" class="content-col">
 
           <div flex layout_md="row">
-            <router-outlet></router-outlet>
+            
 
-            <mat-stepper orientation="vertical" [linear]="isLinear" #stepper>
+            <mat-stepper [linear]="isLinear" #stepper>
+              <mat-step>
+                <ng-template matStepLabel>DATA ENTRY</ng-template>
+                <app-dataentry></app-dataentry>
+              </mat-step>
               <mat-step>
                 <ng-template matStepLabel>DATABASE</ng-template>
                 <app-data></app-data>
               </mat-step>
               <mat-step>
                 <ng-template matStepLabel>ANALYSIS</ng-template>
-
+                <app-analysis></app-analysis>
               </mat-step>
             </mat-stepper>
 
@@ -32,4 +36,6 @@
     </div>
   
   </mat-drawer-container>
+
+<router-outlet></router-outlet>
 

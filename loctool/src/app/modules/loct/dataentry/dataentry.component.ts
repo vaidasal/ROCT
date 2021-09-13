@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
-import { SidenavService } from '../../../services/sidenav.service';
 
 import {CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { DataService } from 'src/app/services/data.service';
@@ -41,7 +40,7 @@ export class DataentryComponent implements OnInit {
 
 
 
-  constructor(private router: Router, private fb: FormBuilder, private sideNavService: SidenavService, private dataService: DataService) { }
+  constructor(private router: Router, private fb: FormBuilder, private dataService: DataService) { }
 
   ngOnInit(): void {
     this.dataService.getSettings().subscribe((settings) => {
@@ -173,10 +172,6 @@ export class DataentryComponent implements OnInit {
         console.log(err);
       });;
   
-  }
-
-  toggleSidenav() { 
-    this.sideNavService.toggle();
   }
 
   drop(event: CdkDragDrop<String[]>) {

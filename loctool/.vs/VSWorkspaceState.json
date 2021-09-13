@@ -3,11 +3,14 @@
     "",
     "\\src",
     "\\src\\app",
+    "\\src\\app\\components",
+    "\\src\\app\\components\\laserentry",
+    "\\src\\app\\components\\login",
     "\\src\\app\\modules",
     "\\src\\app\\modules\\home",
     "\\src\\app\\modules\\loct",
     "\\src\\app\\modules\\loct\\data"
   ],
-  "SelectedNode": "\\src\\app\\modules\\loct\\loct.component.css",
+  "SelectedNode": "\\src\\app\\modules\\loct\\data\\data.component.html",
   "PreviewInSolutionExplorer": false
 }

@@ -21,6 +21,6 @@
   height: 100%;
 }
 
-::ng-deep .mat-step {
-  background-color: #303030;
+.mat-stepper-horizontal {
+    background-color: transparent !important;
 }

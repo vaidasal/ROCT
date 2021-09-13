@@ -15,6 +15,14 @@ import { DataComponent } from './data/data.component';
 import { PartableComponent } from '../../components/partable/partable.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { FilterComponent } from '../../components/filter/filter.component';
+import { AnalysisComponent } from './analysis/analysis.component';
+import { DataentryComponent } from './dataentry/dataentry.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTabsModule } from '@angular/material/tabs';
 
 
 @NgModule({
@@ -22,6 +30,9 @@ import { MatExpansionModule } from '@angular/material/expansion';
     LoctComponent,
     DataComponent,
     PartableComponent,
+    FilterComponent,
+    AnalysisComponent,
+    DataentryComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +47,15 @@ import { MatExpansionModule } from '@angular/material/expansion';
     MatStepperModule,
     DragDropModule,
     MatExpansionModule,
+    ReactiveFormsModule,
+    MatDividerModule,
+    CommonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatCardModule,
+    FormsModule,
+    MatChipsModule,
+    MatTabsModule,
   ]
 })
 export class LoctModule { }

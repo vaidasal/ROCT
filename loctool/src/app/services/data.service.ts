@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
 import {Observable} from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -48,6 +49,14 @@ export class DataService {
       .pipe(
         tap(_ => console.log('ParamTableRequest'))
       );
+  }
+
+
+  //Sharing Data Between Components
+  private parameterSource = new BehaviorSubject<any>([]);
+  currentParameter = this.parameterSource.asObservable();
+  changeParameter(parameter: any[]) {
+    this.parameterSource.next(parameter)
   }
 
 
