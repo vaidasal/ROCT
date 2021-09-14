@@ -13,8 +13,8 @@
           <div flex layout_md="row">
             
 
-            <mat-stepper [linear]="isLinear" #stepper>
-              <mat-step>
+            <mat-stepper [linear]="isLinear" #stepper selectedIndex="1">
+              <mat-step [completed]="true">
                 <ng-template matStepLabel>DATA ENTRY</ng-template>
                 <app-dataentry></app-dataentry>
               </mat-step>

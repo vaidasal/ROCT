@@ -1,15 +1,26 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import * as Plotly from 'src/assets/plotly-latest.min.js';
 import { Subscription } from 'rxjs';
 import { DataService } from '../../../services/data.service';
 import { SidenavService } from '../../../services/sidenav.service';
+
+
 
 @Component({
   selector: 'app-analysis',
   templateUrl: './analysis.component.html',
   styleUrls: ['./analysis.component.css']
 })
+
+
+
 export class AnalysisComponent implements OnInit {
+
+
+  @ViewChild("Graph", { static: true })
+  div!: ElementRef;
+
 
   basket: string[] = [
   ];
@@ -45,6 +56,14 @@ export class AnalysisComponent implements OnInit {
         event.previousIndex,
         event.currentIndex);
     }
+  }
+
+  
+  getDashboard() {
+    this.dataService.getDashboard().subscribe((data) => {
+      const element = this.div.nativeElement;
+      Plotly.newPlot(element, data);
+    })
   }
 
 }

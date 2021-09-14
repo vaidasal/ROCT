@@ -51,6 +51,13 @@ export class DataService {
       );
   }
 
+  getDashboard(): Observable<any> {
+    return this.http.get<any>(API_URL + '/dashboard')
+      .pipe(
+        tap(_ => console.log('ParamTableRequest'))
+      );
+  }
+
 
   //Sharing Data Between Components
   private parameterSource = new BehaviorSubject<any>([]);

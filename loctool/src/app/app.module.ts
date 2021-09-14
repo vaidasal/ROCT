@@ -31,6 +31,8 @@ import { HomeModule } from './modules/home/home.module';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import { SidenavService } from './services/sidenav.service';
 
+
+
 @NgModule({
   declarations: [
     AppComponent,

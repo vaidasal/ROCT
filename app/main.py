@@ -6,7 +6,7 @@ from fastapi import FastAPI
 
 
 from fastapi.middleware.cors import CORSMiddleware
-from routers import users, data_access
+from routers import users, data_access, dashboard
 
 app = FastAPI()
 
@@ -24,5 +24,6 @@ app.add_middleware(
 
 app.include_router(users.router)
 app.include_router(data_access.router)
+app.include_router(dashboard.router)
 
 

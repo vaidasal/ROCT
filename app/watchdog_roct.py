@@ -13,10 +13,25 @@ def readAndSendData(filePath):
     for key in data.keys():
         mqtt.sendMessage(json.dumps(data[key]))
 
+def sendUser():
+    userData = {
+        "email": "",
+        "firstname": "",
+        "lastname": "",
+        "password": "",
+        "scope": "",
+        "created": "",
+        "settings": "",
+    }
+
+    mqtt = Mqtt()
+    mqtt.sendUser(json.dumps(userData))
+
 
 class EventHandler(FileSystemEventHandler):
     def on_created(self, event): # when file is created
-        readAndSendData(event.src_path)
+        #readAndSendData(event.src_path)
+        sendUser()
 
 if __name__ == "__main__":
     observer = Observer()

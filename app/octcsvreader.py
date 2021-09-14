@@ -9,6 +9,26 @@ class OctCsvReader():
 
     path = "data/OK__W885__2021-07-30__11_02_47.937988.csv"
 
+    paramDict = {
+        "frequency": "",
+        "points_per_line": "",
+        "points_per_interval": "",
+        "line_length": "",
+        "extend_points": "",
+        "reference_points": "",
+        "extend_reference_points": "",
+        "lag_xy": "",
+        "x_start": "",
+        "x_end": "",
+        "y_start": "",
+        "y_end": "",
+        "x_ref_coordinate": "",
+        "y_ref_coordinate": "",
+        "jump_speed": "",
+        "scantype": "",
+        "par_grouporder": "",
+    }
+
     def readTablesFromCSV(self, path):
 
         with open(path, newline="") as f:
@@ -166,6 +186,7 @@ class OctCsvReader():
                     dataDict[f"T{n}"]["seam"] = seam[6:]
                     dataDict[f"T{n}"]["groupOrder"] = groupOrder
                     dataDict[f"T{n}"].update(fileDetail)
+                    dataDict[f"T{n}"].update(self.paramDict)
                     groupOrder += 1
             else:
                 # its a line
@@ -182,6 +203,7 @@ class OctCsvReader():
                     dataDict[f"T{n}"]["seam"] = seam[6:]
                     dataDict[f"T{n}"]["groupOrder"] = groupOrder
                     dataDict[f"T{n}"].update(fileDetail)
+                    dataDict[f"T{n}"].update(self.paramDict)
                     groupOrder += 1
 
         # dataDict={"T0":{"P":table}, "T2": {"L1":table1, "L2":table2}}

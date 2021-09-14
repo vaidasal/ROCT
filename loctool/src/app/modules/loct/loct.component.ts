@@ -23,4 +23,5 @@ export class LoctComponent implements OnInit {
     this.sidenav.close();
   }
 
+
 }
