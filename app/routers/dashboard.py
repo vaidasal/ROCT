@@ -9,27 +9,23 @@ router = APIRouter()
 async def makeDashboard():
     print("get")
     pltVis = PlotlyVis()
-    fig = pltVis.getFig()
-    graph = {
-        "data": [
-            {"x": [1, 2, 3], "y": [2, 5, 3], "type": 'bar'},
-        ],
-        "layout": {
-                    "plot_bgcolor":"transparent", "paper_bgcolor":"transparent",
-                    "title":title,
-                   "font": {"color":"white"},
-                    "yaxis":yaxis,
-                   }
-    }
-    return graph
+    figHeat = pltVis.getHeatFig()
+    figHeat["layout"].update(dict(font= {"color": "white"},))
 
-title = dict(text = "A Fancy Plot", font = {"color":"white"})
+    figSlideLine = pltVis.getSlideLine()
+    figSlideLine["layout"].update(dict(font={"color": "white"}, ))
+
+    return (figHeat,figSlideLine)
+
+
+
+title = dict(text = "Keyholeshape", font = {"color":"white"})
 yaxis = dict(
-      showgrid = True,
-      zeroline = True,
-      showline = True,
+      showgrid = False,
+      zeroline = False,
+      showline = False,
       gridcolor = '#616161',
-      gridwidth = 2,
+      gridwidth = 1,
       zerolinecolor = '#616161',
       zerolinewidth = 2,
       linecolor = '#616161',

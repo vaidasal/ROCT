@@ -18,10 +18,6 @@ import { SidenavService } from '../../../services/sidenav.service';
 export class AnalysisComponent implements OnInit {
 
 
-  @ViewChild("Graph", { static: true })
-  div!: ElementRef;
-
-
   basket: string[] = [
   ];
 
@@ -61,8 +57,9 @@ export class AnalysisComponent implements OnInit {
   
   getDashboard() {
     this.dataService.getDashboard().subscribe((data) => {
-      const element = this.div.nativeElement;
-      Plotly.newPlot(element, data);
+      Plotly.newPlot('StepLine', data[1]);
+      Plotly.newPlot('HeatSub', data[0]);
+      
     })
   }
 

@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.loginForm.value)
       .subscribe(() => {
         this.newLoader(false);
-        this.router.navigate(['/home/loct/data']).then(_ => console.log('You are secure now!'));
+        this.router.navigate(['/home/loct']).then(_ => console.log('You are secure now!'));
       }, (err: any) => {
         console.log(err);
         this.newLoader(false);

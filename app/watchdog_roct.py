@@ -30,9 +30,10 @@ def sendUser():
 
 class EventHandler(FileSystemEventHandler):
     def on_created(self, event): # when file is created
-        #readAndSendData(event.src_path)
+        readAndSendData(event.src_path)
         sendUser()
 
+import time
 if __name__ == "__main__":
     observer = Observer()
     event_handler = EventHandler()
@@ -42,9 +43,15 @@ if __name__ == "__main__":
 
     try:
         while True:
-            time.sleep(1)
+            ##
+            readAndSendData('.\data\OK__10__W885__2021-07-30__11_02_47.937988.csv')
+            sendUser()
+            ##
+            time.sleep(5)
     except KeyboardInterrupt:
         observer.stop()
 
     observer.join()
+
+
 
