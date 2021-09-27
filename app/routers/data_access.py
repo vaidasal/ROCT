@@ -137,7 +137,7 @@ async def paramTable(db: Session = Depends(get_db), cols: list = Body(None)):
             colsDict[dataBase.getTable(col, tableDict)] = [col]
     tableData = []
 
-    col = "laserpar.id as laser_id, octpar.id as octpar_id, " + ", ".join(colslist)
+    col = "laserpar.id as laser_id, octpar.id as octpar_id, octpar.scantype as scantype, " + ", ".join(colslist)
     stri = """
         SELECT {} FROM octcsv
         FULL OUTER JOIN laserpar ON laserpar.seam_id = octcsv.seamid

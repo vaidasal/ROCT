@@ -2,6 +2,7 @@
 # activate venv on win: venv\Scripts\activate
 
 from fastapi import FastAPI
+from db.elastic import ElasticDB
 
 
 
@@ -25,5 +26,8 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(data_access.router)
 app.include_router(dashboard.router)
+
+#db = ElasticDB()
+#db.getData()
 
 

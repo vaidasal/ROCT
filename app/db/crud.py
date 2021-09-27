@@ -9,6 +9,7 @@ from schema import user
 import security
 from db.base_class import Base
 from db.database import engine
+from octcsvreader import OctCsvReader
 
 
 def get_user(db: Session, user_id: int):
@@ -106,3 +107,11 @@ def createEntry(
     db.commit()
     db.refresh(new_obj)
     return new_obj.id
+
+def readLocalData(table):
+    path = r"C:\Users\valaune\Desktop\OK__W885__2021-07-30__11_02_47.937988.csv"
+    reader = OctCsvReader()
+    fileDetail = reader.getCSVNameDetailFromFile(path)
+    dataJson = reader.readCSVTables(path, fileDetail)
+    df = reader.getDataFrame(dataJson, table)
+    return df

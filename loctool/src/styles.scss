@@ -10,7 +10,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 body {
   /* width */
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 0px;
     height: 5px;
   }
   /* Track */
@@ -34,7 +34,7 @@ html {
     background-color: black;
   /* width */
   ::-webkit-scrollbar {
-    width: 5px;
+    width: 0px;
     height: 5px;
   }
   /* Track */

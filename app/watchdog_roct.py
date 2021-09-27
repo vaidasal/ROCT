@@ -31,7 +31,7 @@ def sendUser():
 class EventHandler(FileSystemEventHandler):
     def on_created(self, event): # when file is created
         readAndSendData(event.src_path)
-        sendUser()
+        #sendUser()
 
 import time
 if __name__ == "__main__":

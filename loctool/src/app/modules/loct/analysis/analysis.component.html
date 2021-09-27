@@ -43,11 +43,33 @@
 
 
   </mat-tab>
-  <mat-tab label="Dashboard">
-    <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
-    <button type="button" mat-button (click)="getDashboard()">Get Dashboard</button>
-    <div id="HeatSub"></div>
-    <div id="StepLine"></div>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span (click)="getDashboard()">Dashboard</span>
+    </ng-template>
+    <div class="dashboardTab">
+
+      <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
+      <mat-divider></mat-divider>
+      <h3 id="cross"></h3>
+      <div *ngFor="let cp of crossPlots">
+        <div #crossPlot id="{{cp}}"></div>
+      </div>
+      <mat-divider></mat-divider>
+
+      <h3 id="parallel"></h3>
+      <div *ngFor="let pp of parallelPlots">
+        <div #parallelPlot id="{{pp}}"></div>
+      </div>
+      <mat-divider></mat-divider>
+
+      <h3 id="point"></h3>
+      <div *ngFor="let po of pointPlots">
+        <div #pointPlot id="{{po}}"></div>
+      </div>
+
+    </div>
+
 
   </mat-tab>
   

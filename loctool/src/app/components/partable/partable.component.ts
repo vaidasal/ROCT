@@ -6,6 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subscription } from 'rxjs';
 import { DataService } from 'src/app/services/data.service';
+import { SharingService } from '../../services/sharing.service';
 import { UpdateComponent } from '../update/update.component';
 
 
@@ -16,11 +17,16 @@ import { UpdateComponent } from '../update/update.component';
 })
 export class PartableComponent implements OnInit {
 
-  constructor(private dataService: DataService, private dialog: MatDialog) {}
+  selectedRows: any[] = [];
+  rowsubscription!: Subscription;
+  colsubscription!: Subscription;
+
+  constructor(private dataService: DataService, private dialog: MatDialog, private share: SharingService) {}
 
   ngOnInit(): void {
     this.getTable()
-    this.subscription = this.dataService.currentParameter.subscribe(parameter => this.basket = parameter)
+    this.rowsubscription = this.share.selRowSource.subscribe(selRow => this.selectedRows = selRow)
+    this.colsubscription = this.share.selColSource.subscribe(selCol => this.basket = selCol)
   }
   
   dataSource!: MatTableDataSource<any>;
@@ -67,8 +73,6 @@ export class PartableComponent implements OnInit {
     'seamid', 'type', 'line_length',
   ];
 
-  subscription?: Subscription;
-
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -78,11 +82,13 @@ export class PartableComponent implements OnInit {
                         event.previousIndex,
                         event.currentIndex);
     }
-    this.dataService.changeParameter(this.basket);
+    this.share.changeSelCol(this.basket);
+    this.selectedRows = []
     this.getTable();
   }
 
   getTable() {
+    console.log(this.basket);
     this.dataService.postParamTable(this.basket).subscribe((data) => {
       this.dataSource = new MatTableDataSource(data);
       this.dataSource.paginator = this.mpaginator;
@@ -101,19 +107,23 @@ export class PartableComponent implements OnInit {
     });
   }
 
-  selectedRows: any[] = [];
-
   select(row) {
     if (this.selectedRows.includes(row)) {
       this.selectedRows = this.selectedRows.filter(item => item !== row)
     } else {
       this.selectedRows.push(row)
     }
+    this.newRow(this.selectedRows)
     console.log(this.selectedRows)
   }
 
   ngOnDestroy() {
-    this.subscription?.unsubscribe();
+    this.colsubscription?.unsubscribe();
+    this.rowsubscription?.unsubscribe();
+  }
+
+  newRow(rows) {
+    this.share.changeSelRow(rows);
   }
 
 }

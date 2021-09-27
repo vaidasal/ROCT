@@ -209,8 +209,10 @@ class OctCsvReader():
         # dataDict={"T0":{"P":table}, "T2": {"L1":table1, "L2":table2}}
         return dataDict
 
-    def getDataFrame(self, dataDict):
-        jsonData = dataDict["T0"]["L2"]
+    def getDataFrame(self, dataDict, table):
+        print(dataDict.keys())
+        print(table)
+        jsonData = dataDict[table]["L2"]
         list = pd.read_json(jsonData, typ="frame", orient="table")
         df = pd.DataFrame(list)
         return df

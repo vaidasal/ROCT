@@ -7,3 +7,5 @@ pydantic[email]
 pandas
 uvicorn
 fastapi
+elasticsearch
+elasticsearch[async]

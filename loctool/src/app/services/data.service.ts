@@ -51,20 +51,15 @@ export class DataService {
       );
   }
 
-  getDashboard(): Observable<any> {
-    return this.http.get<any>(API_URL + '/dashboard')
+  getDashboard(rows: any): Observable<any> {
+    return this.http.post<any>(API_URL + '/dashboard', rows)
       .pipe(
-        tap(_ => console.log('ParamTableRequest'))
+        tap(_ => console.log('DashboardRequest'))
       );
   }
 
 
-  //Sharing Data Between Components
-  private parameterSource = new BehaviorSubject<any>([]);
-  currentParameter = this.parameterSource.asObservable();
-  changeParameter(parameter: any[]) {
-    this.parameterSource.next(parameter)
-  }
+
 
 
 }
