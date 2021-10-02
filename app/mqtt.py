@@ -28,14 +28,3 @@ class Mqtt:
 
         self.client.loop()
 
-    def sendUser(self, message):
-
-        self.client.connect(self.BROKER_ADDRESS, PORT)
-
-        print("Connected to MQTT Broker: " + self.BROKER_ADDRESS)
-
-        DATA = message
-
-        self.client.publish(self.TOPICUSER, DATA, qos=QOS)
-
-        self.client.loop()

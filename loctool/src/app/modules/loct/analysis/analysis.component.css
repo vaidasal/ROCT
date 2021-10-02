@@ -2,9 +2,24 @@
     background-color: black!important;
 }
 
+.closeButton {
+    background-color: black;
+    margin-top: 4pt;
+}
+
+.selectField {
+    padding-top: 5pt;
+    padding-right: 10pt;
+}
+
 #cross, #parallel, #point {
     margin-left: 20pt;
     margin-top: 10pt;
+}
+
+.createCustomButton {
+    margin-top: 10pt;
+    float: right;
 }
 
 .example-list {
@@ -63,7 +78,7 @@
 }
 
 td {
-    width: 50%;
+    width: 33%;
     vertical-align: top;
 }
 

@@ -4,13 +4,14 @@
     "\\src",
     "\\src\\app",
     "\\src\\app\\components",
-    "\\src\\app\\components\\laserentry",
-    "\\src\\app\\components\\login",
+    "\\src\\app\\components\\partable",
     "\\src\\app\\modules",
-    "\\src\\app\\modules\\home",
     "\\src\\app\\modules\\loct",
-    "\\src\\app\\modules\\loct\\data"
+    "\\src\\app\\modules\\loct\\analysis",
+    "\\src\\app\\modules\\user",
+    "\\src\\app\\modules\\user\\register",
+    "\\src\\app\\services"
   ],
-  "SelectedNode": "\\src\\app\\modules\\loct\\data\\data.component.html",
+  "SelectedNode": "\\src\\app\\components\\partable\\partable.component.ts",
   "PreviewInSolutionExplorer": false
 }

@@ -40,6 +40,7 @@ export class PartableComponent implements OnInit {
     'frequency',
   ];
 
+
   bag2 = [
     'seam_length',
     'speed',

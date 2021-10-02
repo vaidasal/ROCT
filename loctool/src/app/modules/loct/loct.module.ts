@@ -23,6 +23,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -56,6 +57,7 @@ import { MatTabsModule } from '@angular/material/tabs';
     FormsModule,
     MatChipsModule,
     MatTabsModule,
+    MatSelectModule,
   ]
 })
 export class LoctModule { }

@@ -58,6 +58,13 @@ export class DataService {
       );
   }
 
+  getCustomPlot(rowsAndAxes: any): Observable<any> {
+    return this.http.post<any>(API_URL + '/customplot', rowsAndAxes)
+      .pipe(
+        tap(_ => console.log('CustomPlotRequest'))
+      );
+  }
+
 
 
 

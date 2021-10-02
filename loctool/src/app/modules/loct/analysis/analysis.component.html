@@ -2,16 +2,58 @@
 <mat-tab-group>
   <mat-tab label="Custom Visualisation">
     <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
+
+    <mat-form-field class="selectField">
+      <mat-select placeholder="Chart Type Left" (selectionChange)="onSelChangeL($event)">
+        <mat-option *ngFor="let typ of chartTypes" [value]="typ">{{ typ }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="selectField">
+      <mat-select placeholder="Chart Type Right" (selectionChange)="onSelChangeR($event)">
+        <mat-option *ngFor="let typ of chartTypes" [value]="typ">{{ typ }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-button (click)="generateCustomPlot()">Generate Plot</button>
+
     <div cdkDropListGroup class="dropLists">
 
       <mat-label>Parameter</mat-label>
 
-      <div cdkDropList
-           cdkDropListOrientation="vertical"
-           [cdkDropListData]="basket"
-           class="example-list"
-           (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of basket" cdkDrag>{{item}}</div>
+      <div class="example-container">
+
+        <div cdkDropList
+             cdkDropListOrientation="horizontal"
+             [cdkDropListData]="bag1"
+             class="example-list"
+             cdkDropListSortingDisabled
+             (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let bag of bag1" cdkDrag>{{bag}}</div>
+        </div>
+      </div>
+
+      <div class="example-container">
+
+        <div cdkDropList
+             cdkDropListOrientation="horizontal"
+             [cdkDropListData]="bag2"
+             class="example-list"
+             cdkDropListSortingDisabled
+             (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let bag of bag2" cdkDrag>{{bag}}</div>
+        </div>
+      </div>
+
+      <div class="example-container">
+
+        <div cdkDropList
+             cdkDropListOrientation="horizontal"
+             [cdkDropListData]="bag3"
+             class="example-list"
+             cdkDropListSortingDisabled
+             (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let bag of bag3" cdkDrag>{{bag}}</div>
+        </div>
       </div>
 
       <table class="basket-full-width">
@@ -24,6 +66,16 @@
                  class="vertical-list"
                  (cdkDropListDropped)="drop($event)">
               <div class="vertical-box" *ngFor="let item of basketL" cdkDrag>{{item}}</div>
+            </div>
+          </td>
+          <td>
+            <mat-label>X Axis</mat-label>
+
+            <div cdkDropList
+                 [cdkDropListData]="basketX"
+                 class="vertical-list"
+                 (cdkDropListDropped)="drop($event)">
+              <div class="vertical-box" *ngFor="let item of basketX" cdkDrag>{{item}}</div>
             </div>
           </td>
           <td>
@@ -41,6 +93,13 @@
     </div>
 
 
+
+    <h3 id="custom"></h3>
+    <div *ngFor="let cu of customPlots">
+      <div [style.display]="true ? 'none': ''" id="b{{cu}}"
+              (click)="removeChart(cu)" class="closeButton"><mat-icon>close</mat-icon></div>
+      <div #customPlot id="{{cu}}"></div>
+    </div>
 
   </mat-tab>
   <mat-tab>

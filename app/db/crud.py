@@ -108,10 +108,12 @@ def createEntry(
     db.refresh(new_obj)
     return new_obj.id
 
-def readLocalData(table):
-    path = r"C:\Users\valaune\Desktop\OK__W885__2021-07-30__11_02_47.937988.csv"
+def readLocalData(table, path, point):
     reader = OctCsvReader()
     fileDetail = reader.getCSVNameDetailFromFile(path)
     dataJson = reader.readCSVTables(path, fileDetail)
-    df = reader.getDataFrame(dataJson, table)
+    if point:
+        df = reader.getPointDataFrame(dataJson, table)
+    else:
+        df = reader.getDataFrame(dataJson, table)
     return df

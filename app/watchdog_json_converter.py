@@ -5,17 +5,15 @@ from watchdog.events import FileSystemEventHandler
 from octcsvreader import OctCsvReader
 from mqtt import Mqtt
 
-def readAndSendData(filePath):
+def readAndConvertData(filePath):
     reader = OctCsvReader()
+    print(filePath)
     fileDetail = reader.getCSVNameDetailFromFile(os.path.basename(filePath))
     data = reader.readCSVTables(filePath, fileDetail)
-    mqtt = Mqtt()
     for key in data.keys():
-        ####
-        #with open(f'{fileDetail["seamid"]}__{key}.json', 'w', encoding='utf-8') as f:
-        #    json.dump(data[key], f, ensure_ascii=False, indent=4)
-        ####
-        mqtt.sendMessage(json.dumps(data[key]))
+        with open(f'{fileDetail["seamid"]}__{key}.json', 'w', encoding='utf-8') as f:
+            json.dump(data[key], f, ensure_ascii=False, indent=4)
+
 
 
 class EventHandler(FileSystemEventHandler):
@@ -24,7 +22,7 @@ class EventHandler(FileSystemEventHandler):
         while (historicalSize != os.path.getsize(event.src_path)):
             historicalSize = os.path.getsize(event.src_path)
             time.sleep(1)
-        readAndSendData(event.src_path)
+        readAndConvertData(event.src_path)
 
 if __name__ == "__main__":
     observer = Observer()
@@ -35,14 +33,8 @@ if __name__ == "__main__":
 
     try:
         while True:
-            ##
-            #readAndSendData('.\data\OK__10__W885__2021-07-30__11_02_47.937988.csv')
-            ##
             time.sleep(5)
     except KeyboardInterrupt:
         observer.stop()
 
     observer.join()
-
-
-
