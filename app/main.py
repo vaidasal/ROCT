@@ -7,7 +7,7 @@ from db.elastic import ElasticDB
 
 
 from fastapi.middleware.cors import CORSMiddleware
-from routers import users, data_access, dashboard
+from routers import users, data_access, dashboard, customplot
 
 app = FastAPI()
 
@@ -26,6 +26,7 @@ app.add_middleware(
 app.include_router(users.router)
 app.include_router(data_access.router)
 app.include_router(dashboard.router)
+app.include_router(customplot.router)
 
 #db = ElasticDB()
 #db.getData()

@@ -10,15 +10,11 @@ import { DataService } from 'src/app/services/data.service';
 export class SettingsComponent implements OnInit {
 
   settings!: {}
+  material!: []
+  cabin = ["Cabin 1", "Cabin 2", "Cabin 3", "Cabin 4", "Cabin 5", "Cabin 6", "Cabin 7"]
 
   form = this.fb.group({
-    parallel: this.fb.array([
-    ]),
-    cross: this.fb.array([
-    ]),
-    point: this.fb.array([
-    ]),
-    laser: this.fb.array([
+    main: this.fb.array([
     ])
   });
 
@@ -28,43 +24,57 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.dataService.getSettings().subscribe((settings) => {
       this.settings = settings
-      console.log(this.settings)
-      this.addLaser();
-      this.addParallel();
-      this.addPoint();
-      this.addCross();
+      this.material = JSON.parse(settings["material"])
+      this.addFormFields();
     })
   }
 
-  get parallel() {
-    return this.form.get('parallel') as FormArray;
+  get main() {
+    return this.form.get('main') as FormArray;
   }
 
-  get cross() {
-    return this.form.get('cross') as FormArray;
-  }
+  addFormFields() {
+    const formGroup = this.fb.group({
+      seam_id: [""],
+      part_number: [this.settings['part_number']],
+      welding_cabin: [this.settings['welding_cabin']],
+      optics: [this.settings['optics']],
 
-  get point() {
-    return this.form.get('point') as FormArray;
-  }
+      static_x: [this.settings['static_x']],
+      static_y: [this.settings['static_y']],
+      static_z: [this.settings['static_z']],
+      dynamic_speed: [this.settings['dynamic_speed']],
+      dynamic_number: [this.settings['dynamic_number']],
 
-  get laser() {
-    return this.form.get('laser') as FormArray;
-  }
-
-  addLaser() {
-    const parallelForm = this.fb.group({
+      laser_power: [this.settings['laser_power']],
+      robot_speed: [this.settings['robot_speed']],
+      scanner_speed: [this.settings['scanner_speed']],
       seam_length: [this.settings['seam_length']],
-      speed: [this.settings['speed']],
+      welding_duration: [this.settings['welding_duration']],
+
+      ramp_power_start: [this.settings['ramp_power_start']],
+      ramp_power_end: [this.settings['ramp_power_end']],
+      ramp_duration: [this.settings['ramp_duration']],
+
+      fiber_diameter: [this.settings['fiber_diameter']],
+      laser_number: [this.settings['laser_number']],
+      defocusing: [this.settings['defocusing']],
+
+
+      sheet_1_height: [this.settings['sheet_1_height']],
+      sheet_2_height: [this.settings['sheet_2_height']],
+      sheet_3_height: [this.settings['sheet_3_height']],
+      gap_1: [this.settings['gap_1']],
+      gap_2: [this.settings['gap_2']],
+      sheet_1_material: [this.material],
+      sheet_2_material: [this.material],
+      sheet_3_material: [this.material],
+
+      measuring_frequency: [this.settings['measuring_frequency']],
+      sled_power: [this.settings['sled_power']],
+      jump_speed: [this.settings['jump_speed']],
       step_size_oct_tester: [this.settings['step_size_oct_tester']],
-    })
 
-    this.laser.push(parallelForm);
-  }
-
-  addParallel() {
-    const parallelForm = this.fb.group({
-      frequency: [this.settings['frequency']],
       points_per_line: [this.settings['points_per_line']],
       line_length: [this.settings['line_length']],
       extend_points: [this.settings['extend_points']],
@@ -77,45 +87,13 @@ export class SettingsComponent implements OnInit {
       y_end: [this.settings['y_end']],
       x_ref_coordinate: [this.settings['x_ref_coordinate']],
       y_ref_coordinate: [this.settings['y_ref_coordinate']],
-      jump_speed: [this.settings['jump_speed']],
     })
 
-    this.parallel.push(parallelForm);
+    this.main.push(formGroup);
   }
 
-  addCross() {
-    const crossForm = this.fb.group({
-      frequency: [this.settings['frequency']],
-      points_per_line: [this.settings['points_per_line']],
-      line_length: [this.settings['line_length']],
-      extend_points: [this.settings['extend_points']],
-      lag_xy: [this.settings['lag_xy']],
-      x_start: [this.settings['x_start']],
-      x_end: [this.settings['x_end']],
-      y_start: [this.settings['y_start']],
-      y_end: [this.settings['y_end']],
-      jump_speed: [this.settings['jump_speed']],
-    })
 
-    this.cross.push(crossForm);
-  }
 
-  addPoint() {
-    const pointForm = this.fb.group({
-      frequency: [this.settings['frequency']],
-      points_per_interval: [this.settings['points_per_interval']],
-      extend_points: [this.settings['extend_points']],
-      reference_points: [this.settings['reference_points']],
-      extend_reference_points: [this.settings['extend_reference_points']],
-      x_start: [this.settings['x_start']],
-      y_start: [this.settings['y_start']],
-      x_ref_coordinate: [this.settings['x_ref_coordinate']],
-      y_ref_coordinate: [this.settings['y_ref_coordinate']],
-      jump_speed: [this.settings['jump_speed']],
-    })
-
-    this.point.push(pointForm);
-  }
 
 
   onSubmit() {

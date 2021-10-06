@@ -13,18 +13,24 @@
           <div flex layout_md="row">
             
 
-            <mat-stepper [linear]="isLinear" #stepper selectedIndex="1">
+            <mat-stepper [linear]="isLinear" #stepper [selectedIndex]="selectedIndex" (selectionChange)="changeIndex($event)">
               <mat-step [completed]="true">
                 <ng-template matStepLabel>DATA ENTRY</ng-template>
-                <app-dataentry></app-dataentry>
+                <ng-template matStepContent>
+                  <app-dataentry></app-dataentry>
+                </ng-template>
               </mat-step>
               <mat-step>
                 <ng-template matStepLabel>DATABASE</ng-template>
-                <app-data></app-data>
+                <ng-template matStepContent>
+                  <app-data></app-data>
+                </ng-template>
               </mat-step>
               <mat-step>
                 <ng-template matStepLabel>VISUAL</ng-template>
-                <app-analysis></app-analysis>
+                <ng-template matStepContent>
+                  <app-analysis *ngIf="selectedIndex === 2"></app-analysis>
+                </ng-template>
               </mat-step>
               <mat-step>
                 <ng-template matStepLabel>ANALYSIS</ng-template>

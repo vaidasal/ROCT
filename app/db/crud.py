@@ -112,8 +112,10 @@ def readLocalData(table, path, point):
     reader = OctCsvReader()
     fileDetail = reader.getCSVNameDetailFromFile(path)
     dataJson = reader.readCSVTables(path, fileDetail)
-    if point:
+    if point == True:
         df = reader.getPointDataFrame(dataJson, table)
-    else:
+    elif point == False:
         df = reader.getDataFrame(dataJson, table)
+    else:
+        df = reader.getAllDataFrame(dataJson, table)
     return df

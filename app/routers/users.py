@@ -180,5 +180,5 @@ def delete_item(
     user = crud.get_user(db=db, user_id=id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    removed_user = crud.remove(db=db, type=models.models.User, id=id)
+    removed_user = crud.remove(db=db, type=models.User, id=id)
     return removed_user

@@ -44,23 +44,12 @@ export class PartableComponent implements OnInit {
   bag2 = [
     'seam_length',
     'speed',
-    'step_size_oct_tester',
-    'x_start',
-    'x_end',
-    'y_start',
-    'y_end',
-    'x_ref_coordinate',
-    'y_ref_coordinate',
-    'jump_speed',
     'scantype',
   ];
 
   bag3 = [
-    'seam_length',
-    'step_size_oct_tester',
     'reference_points',
     'extend_reference_points',
-    'lag_xy',
     'status',
     'linenumber',
     'datetime',

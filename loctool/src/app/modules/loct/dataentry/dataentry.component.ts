@@ -37,14 +37,16 @@ export class DataentryComponent implements OnInit {
   ];
 
   settings!: {}
-
-
+  material!: []
+  cabin = ["Cabin 1", "Cabin 2", "Cabin 3", "Cabin 4", "Cabin 5", "Cabin 6", "Cabin 7"]
+  tcp = "TCP"
 
   constructor(private router: Router, private fb: FormBuilder, private dataService: DataService) { }
 
   ngOnInit(): void {
     this.dataService.getSettings().subscribe((settings) => {
       this.settings = settings
+      this.material = JSON.parse(settings["material"])
       console.log(this.settings)
       this.addLaser();
     })
@@ -71,11 +73,47 @@ export class DataentryComponent implements OnInit {
     return this.form.get('chipForm') as FormArray;
   }
 
+
   addLaser() {
     const parallelForm = this.fb.group({
       seam_id: [""],
+      part_number: [this.settings['part_number']],
+      welding_cabin: [this.settings['welding_cabin']],
+      optics: [this.settings['optics']],
+
+      static_x: [this.settings['static_x']],
+      static_y: [this.settings['static_y']],
+      static_z: [this.settings['static_z']],
+      dynamic_speed: [this.settings['dynamic_speed']],
+      dynamic_number: [this.settings['dynamic_number']],
+
+      laser_power: [this.settings['laser_power']],
+      robot_speed: [this.settings['robot_speed']],
+      scanner_speed: [this.settings['scanner_speed']],
       seam_length: [this.settings['seam_length']],
-      speed: [this.settings['speed']],
+      welding_duration: [this.settings['welding_duration']],
+
+      ramp_power_start: [this.settings['ramp_power_start']],
+      ramp_power_end: [this.settings['ramp_power_end']],
+      ramp_duration: [this.settings['ramp_duration']],
+
+      fiber_diameter: [this.settings['fiber_diameter']],
+      laser_number: [this.settings['laser_number']],
+      defocusing: [this.settings['defocusing']],
+   
+      
+      sheet_1_height: [this.settings['sheet_1_height']],
+      sheet_2_height: [this.settings['sheet_2_height']],
+      sheet_3_height: [this.settings['sheet_3_height']],
+      gap_1: [this.settings['gap_1']],
+      gap_2: [this.settings['gap_2']],
+      sheet_1_material: [this.material],
+      sheet_2_material: [this.material],
+      sheet_3_material: [this.material],
+
+      measuring_frequency: [this.settings['measuring_frequency']],
+      sled_power: [this.settings['sled_power']],
+      jump_speed: [this.settings['jump_speed']],
       step_size_oct_tester: [this.settings['step_size_oct_tester']],
     })
 
@@ -84,7 +122,7 @@ export class DataentryComponent implements OnInit {
 
   addParallel() {
     const parallelForm = this.fb.group({
-      frequency: [this.settings['frequency']],
+      
       points_per_line: [this.settings['points_per_line']],
       line_length: [this.settings['line_length']],
       extend_points: [this.settings['extend_points']],
@@ -97,7 +135,6 @@ export class DataentryComponent implements OnInit {
       y_end: [this.settings['y_end']],
       x_ref_coordinate: [this.settings['x_ref_coordinate']],
       y_ref_coordinate: [this.settings['y_ref_coordinate']],
-      jump_speed: [this.settings['jump_speed']],
     })
 
     this.parallel.push(parallelForm);
@@ -106,7 +143,6 @@ export class DataentryComponent implements OnInit {
 
   addCross() {
     const crossForm = this.fb.group({
-      frequency: [this.settings['frequency']],
       points_per_line: [this.settings['points_per_line']],
       line_length: [this.settings['line_length']],
       extend_points: [this.settings['extend_points']],
@@ -115,7 +151,6 @@ export class DataentryComponent implements OnInit {
       x_end: [this.settings['x_end']],
       y_start: [this.settings['y_start']],
       y_end: [this.settings['y_end']],
-      jump_speed: [this.settings['jump_speed']],
     })
 
     this.cross.push(crossForm);
@@ -124,7 +159,6 @@ export class DataentryComponent implements OnInit {
 
   addPoint() {
     const pointForm = this.fb.group({
-      frequency: [this.settings['frequency']],
       points_per_interval: [this.settings['points_per_interval']],
       extend_points: [this.settings['extend_points']],
       reference_points: [this.settings['reference_points']],
@@ -133,11 +167,15 @@ export class DataentryComponent implements OnInit {
       y_start: [this.settings['y_start']],
       x_ref_coordinate: [this.settings['x_ref_coordinate']],
       y_ref_coordinate: [this.settings['y_ref_coordinate']],
-      jump_speed: [this.settings['jump_speed']],
     })
 
     this.point.push(pointForm);
     this.updateChipsPar("poi");
+  }
+
+  changeWeldType(event) {
+    this.tcp=event.value
+    console.log(event.value)
   }
 
 

@@ -14,6 +14,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatSelectModule } from '@angular/material/select';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatCardModule,
     MatButtonModule,
     MatDividerModule,
+    MatSelectModule,
   ]
 })
 export class SettingsModule { }

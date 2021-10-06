@@ -3,6 +3,7 @@
   <mat-tab label="Custom Visualisation">
     <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
 
+    <mat-checkbox [(ngModel)]="darkmodeCheck" color="primary" labelPosition="before" class="darkCheck">Dark Mode</mat-checkbox>
     <mat-form-field class="selectField">
       <mat-select placeholder="Chart Type Left" (selectionChange)="onSelChangeL($event)">
         <mat-option *ngFor="let typ of chartTypes" [value]="typ">{{ typ }}</mat-option>
@@ -14,7 +15,43 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-button (click)="generateCustomPlot()">Generate Plot</button>
+    <button mat-flat-button color="primary" (click)="generateCustomPlot(titleInput.value, xAxInput.value, yAxInput.value, yyAxInput.value)">Add Plot</button>
+
+    <div class="divOfTitles">
+      <mat-form-field class="selectField">
+        <input placeholder="Title" matInput #titleInput [matAutocomplete]="autoTitle"/>
+        <mat-autocomplete #autoTitle>
+          <mat-option *ngFor="let option of titleOptions" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="selectField">
+        <input placeholder="X Axis Name" matInput #xAxInput [matAutocomplete]="autoxAx" />
+        <mat-autocomplete #autoxAx>
+          <mat-option *ngFor="let optx of titlexAx" [value]="optx">
+            {{ optx }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="selectField">
+        <input placeholder="Y left Axis Name" matInput #yAxInput [matAutocomplete]="autoyAx" />
+        <mat-autocomplete #autoyAx>
+          <mat-option *ngFor="let opty of titleyAx" [value]="opty">
+            {{ opty }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="selectField">
+        <input placeholder="Y right Axis Name" matInput #yyAxInput [matAutocomplete]="autoyyAx" />
+        <mat-autocomplete #autoyyAx>
+          <mat-option *ngFor="let optyy of titleyyAx" [value]="optyy">
+            {{ optyy }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
 
     <div cdkDropListGroup class="dropLists">
 
@@ -97,7 +134,7 @@
     <h3 id="custom"></h3>
     <div *ngFor="let cu of customPlots">
       <div [style.display]="true ? 'none': ''" id="b{{cu}}"
-              (click)="removeChart(cu)" class="closeButton"><mat-icon>close</mat-icon></div>
+           (click)="removeChart(cu)" class="closeButton"><mat-icon>close</mat-icon></div>
       <div #customPlot id="{{cu}}"></div>
     </div>
 
@@ -109,6 +146,7 @@
     <div class="dashboardTab">
 
       <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
+      <mat-checkbox [(ngModel)]="darkmodeCheck" labelPosition="before" class="darkCheck">Dark Mode</mat-checkbox>
       <mat-divider></mat-divider>
       <h3 id="cross"></h3>
       <div *ngFor="let cp of crossPlots">

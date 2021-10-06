@@ -223,6 +223,20 @@ class OctCsvReader():
         df.columns = dataDict[table]["C__L2"]
         return df
 
+    def getAllDataFrame(self, dataDict, table):
+        print(dataDict.keys())
+        print(table)
+        jsonData = dataDict[table]["L2"]
+        list = pd.read_json(jsonData, typ="frame", orient="values")
+        df2 = pd.DataFrame(list)
+        df2.columns = dataDict[table]["C__L2"]
+
+        jsonData = dataDict[table]["L1"]
+        list = pd.read_json(jsonData, typ="frame", orient="values")
+        df1 = pd.DataFrame(list)
+        df1.columns = dataDict[table]["C__L1"]
+        return [df1, df2]
+
     def getPointDataFrame(self, dataDict, table):
         print(dataDict.keys())
         print(table)

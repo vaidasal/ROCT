@@ -5,35 +5,19 @@ import db.crud as crud
 
 router = APIRouter()
 
-@router.post("/customplot")
-async def makeCustomPlot(dataList: list = Body(None)):
-    print(dataList)
-    pltVis = PlotlyVis()
-    colorList = ["#BB86FC", "#03DAC6", "#B00020", "#FFA000", "#CDDC39", "#FF4081", "#795548"]
-    plots = {"customtext": "", "custom": []}
-
-    for data in dataList:
-        if len(data["rows"]) != 0:
-            cusdf = []
-            cusleg = []
-            path = r"C:\Users\valaune\Desktop\Data\Point\OK__W885__2021-04-26__12_08_31.426051.csv"
-            for row in data["rows"]:
-                cusdf.append(crud.readLocalData("T2", path, True))
-                cusleg.append("SeamID: " + str(row["seamid"]))
-
-            plots["custom"].append(pltVis.getFig(cusdf, cusleg, colorList, data["basketL"],
-                                                 data["basketX"], data["basketR"], data["chartType"]))
-    return plots
 
 @router.post("/dashboard")
-async def makeDashboard(rows: list = Body(None)):
+async def makeDashboard(rowsdict: dict = Body(None)):
     pltVis = PlotlyVis()
 
     colorList = ["#BB86FC", "#03DAC6", "#B00020", "#FFA000", "#CDDC39", "#FF4081", "#795548"]
 
     plots = {"crosstext": "Cross Scan","paralleltext": "Parallel Scan", "pointtext": "Point Scan",
              "parallel": [], "cross": [], "point": []}
-    print(rows)
+
+    rows = rowsdict["rows"]
+    darkmode = rowsdict["mode"]
+
     if len(rows) != 0:
         par = []
         cro = []
@@ -52,7 +36,7 @@ async def makeDashboard(rows: list = Body(None)):
             print("Parallel plot")
 
             # Daten aus Datenbank
-            durchlaufDauer = 2.38
+            durchlaufDauer = 8.81
             prozessDauer = 240
             durchlaufeProNaht = prozessDauer/durchlaufDauer
             nahtLange = 30
@@ -66,9 +50,10 @@ async def makeDashboard(rows: list = Body(None)):
             pardf.append(crud.readLocalData(tableNames[i], path, False))
             parleg.append("SeamID: " + str(par[i]["seamid"]))
 
-        plots["parallel"].append(pltVis.getParallelHeatFig(pardf, parleg, colorList))
+        plots["parallel"].append(pltVis.getParallelHeatFig(pardf, parleg, colorList, darkmode))
+        plots["parallel"].append(pltVis.makeParalelSynced(pardf, parleg, colorList, darkmode))
         for i in range(len(pardf)):
-            plots["parallel"].append(pltVis.getParallelSlideLine(pardf[i], asl[i], colorList[i], sheet1, gap, sheet2))
+            plots["parallel"].append(pltVis.getParallelSlideLine(pardf[i], asl[i], colorList[i], sheet1, gap, sheet2, darkmode))
 
         ######## CROSS
         crodf = []
@@ -92,9 +77,9 @@ async def makeDashboard(rows: list = Body(None)):
             crodf.append(crud.readLocalData(tableNames[i], path, False))
             croleg.append("SeamID: " + str(cro[i]["seamid"]))
 
-        plots["cross"].append(pltVis.getHeatSubFig(crodf, croleg, colorList, asl))
+        plots["cross"].append(pltVis.getHeatSubFig(crodf, croleg, colorList, asl, darkmode))
         for i in range(len(crodf)):
-            plots["cross"].append(pltVis.getSlideLine(crodf[i], asl[i], colorList[i], sheet1, gap, sheet2))
+            plots["cross"].append(pltVis.getSlideLine(crodf[i], asl[i], colorList[i], sheet1, gap, sheet2, darkmode))
 
         ######## POINT
         poidf = []
@@ -119,7 +104,7 @@ async def makeDashboard(rows: list = Body(None)):
             print(poi)
             poileg.append("SeamID: " + str(poi[i]["seamid"]))
 
-        plots["point"].append(pltVis.getHeatFig(poidf, poileg, colorList, sheet1, gap, sheet2))
+        plots["point"].append(pltVis.getHeatFig(poidf, poileg, colorList, sheet1, gap, sheet2, darkmode))
         #for i in range(len(poidf)):
         #    plots["point"].append(pltVis.getSlideLine(poidf[i], asl[i], colorList[i], sheet1, gap, sheet2))
 

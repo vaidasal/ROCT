@@ -1,6 +1,7 @@
 
 import numpy as np
 import pandas as pd
+from datetime import datetime
 
 
 class PlotlyVis:
@@ -8,10 +9,17 @@ class PlotlyVis:
 
     color = "#BB86FC"
     colorList = ["#BB86FC", "#03DAC6", "#B00020"]
+    imgExportOptions = dict(
+        format="jpeg",
+        filename=str(datetime.now()),
+        height=720,
+        width=1280,
+        scale=2
+    )
 
 
     ################################## POINT ###########################################
-    def getHeatFig(self, df, legend, colorList, sheet1, gap, sheet2):
+    def getHeatFig(self, df, legend, colorList, sheet1, gap, sheet2, dark):
         data = []
         ci = 0
         for d in df:
@@ -128,15 +136,26 @@ class PlotlyVis:
         graph = {
             "data": data,
             "layout": layout,
-            "config": {"responsive": True},
+            "config": {"responsive": True, "toImageButtonOptions": self.imgExportOptions},
 
         }
+
+        if not dark:
+            graph["layout"].update(dict(
+                font={"color": "black"},
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                xaxis={"domain": [0, 0.85], "tickformat": '%s.%f', "title": "Time [s]"},
+                yaxis={"domain": [0, 0.82], },
+                xaxis2={"domain": [0.85, 1], "ticks": "outside"},
+                yaxis2={"domain": [0.85, 1], "zeroline": True, "ticks": "outside"},
+            ))
 
         return graph
 
     ################################# CROSS ############################################
 
-    def getHeatSubFig(self, df, legend, colorList, asl):
+    def getHeatSubFig(self, df, legend, colorList, asl, dark):
         data = []
         ci = 0
         for d in df:
@@ -156,7 +175,6 @@ class PlotlyVis:
                 type='histogram2dcontour',
                 legendgroup=str(ci),
                 showlegend=False,
-                opacity=0.7,
             )
 
 
@@ -212,7 +230,6 @@ class PlotlyVis:
                 type='histogram2dcontour',
                 legendgroup=str(ci),
                 showlegend=False,
-                opacity=0.7,
             )
 
             trace5 = dict(
@@ -269,7 +286,7 @@ class PlotlyVis:
             height= "700px",
             paper_bgcolor="black",
             plot_bgcolor="black",
-            margin={"r":20, "t":0, "b":40, "l":60},
+            margin={"r":20, "t":0, "b":50, "l":60},
             grid={"rows":1,"columns":2, "subplots":[["xy","x4y4"]]},
             xaxis={"title": "x TCP [mm]", "domain": [0, 0.49], "zeroline": False,
                    "showgrid": False},
@@ -291,9 +308,23 @@ class PlotlyVis:
         graph = {
             "data": data,
             "layout": layout,
-            "config": {"responsive": True},
+            "config": {"responsive": True, "toImageButtonOptions": self.imgExportOptions},
 
         }
+
+        if not dark:
+            graph["layout"].update(dict(
+                font={"color": "black"},
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                xaxis={"title": "x TCP [mm]", "domain": [0, 0.49]},
+                yaxis={"title": "z Depth [mm]", "domain": [0, 0.82]},
+                yaxis2={"domain": [0.85, 1], "ticks": "outside"},
+                xaxis3={"title": "y Progression", "domain": [0.5, 0.9], "ticks": "outside"},
+                yaxis3={"domain": [0, 0.82], "ticks": "outside"},
+                xaxis4={"domain": [0.91, 1], "ticks": "outside"},
+                yaxis4={"domain": [0.85, 1], "ticks": "outside", "side": "right", "anchor": "x3"},
+            ))
 
         return graph
 
@@ -317,7 +348,7 @@ class PlotlyVis:
         return (x,z,i)
 
 
-    def getSlideLine(self, df, scanStep, color, sheet1, gap, sheet2):
+    def getSlideLine(self, df, scanStep, color, sheet1, gap, sheet2, dark):
 
         df = df.drop(["Line Start [us]", "Line End [us]"], axis=1).reset_index(drop=True).astype('float64') # leaves only xz Matrix
 
@@ -434,7 +465,7 @@ class PlotlyVis:
             hovermode= 'closest',
             paper_bgcolor="black",
             plot_bgcolor="black",
-            margin={"r":20, "t":20, "b":40, "l":60},
+            margin={"r":20, "t":20, "b":50, "l":60},
             xaxis={"title": "x TCP [mm]", "showgrid": False, "zeroline": False, "rangeslider": {}, "domain": [0,0.5]},
             yaxis={"title": "z Depth [mm]", "showgrid": False, "range": [mi,ma], "autorange": False, "fixedrange": True},
             sliders= [{
@@ -461,14 +492,31 @@ class PlotlyVis:
         graph = {
             "layout": layout,
             "data": data,
-            "config": {"responsive": True},
+            "config": {"responsive": True, "toImageButtonOptions": self.imgExportOptions},
         }
+
+        if not dark:
+            graph["layout"].update(dict(
+                font={"color": "black"},
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                xaxis={"title": "x TCP [mm]", "rangeslider": {}, "domain": [0, 0.5]},
+                yaxis={"title": "z Depth [mm]", "range": [mi, ma], "autorange": False, "fixedrange": True},
+                scene1=dict(
+                    domain={"x": [0.5, 1]},
+                    camera={"eye": {"x": 1, "y": 0.1, "z": 1}},
+                    aspectmode="data",
+                    xaxis={"visible": False},
+                    yaxis={"scaleanchor": "x", "scaleratio": 1, "visible": False},
+                    zaxis={"scaleanchor": "x", "scaleratio": 1, "visible": False},
+                ),
+            ))
 
         return graph
 
     ####################################### PARALLEL ####################################
 
-    def getParallelHeatFig(self, df, legend, colorList):
+    def getParallelHeatFig(self, df, legend, colorList, dark):
         data = []
         ci = 0
         for d in df:
@@ -487,7 +535,6 @@ class PlotlyVis:
                 type='histogram2dcontour',
                 legendgroup=str(ci),
                 showlegend=False,
-                opacity=0.7,
             )
 
             trace1 = dict(
@@ -541,7 +588,6 @@ class PlotlyVis:
                 type='histogram2dcontour',
                 legendgroup=str(ci),
                 showlegend=False,
-                opacity=0.7,
             )
 
             trace5 = dict(
@@ -597,7 +643,7 @@ class PlotlyVis:
             height="700px",
             paper_bgcolor="black",
             plot_bgcolor="black",
-            margin={"r": 20, "t": 0, "b": 40, "l": 60},
+            margin={"r": 20, "t": 0, "b": 70, "l": 60},
             grid={"rows": 1, "columns": 2, "subplots": [["xy", "x4y4"]]},
             xaxis={"title": "x TCP [mm]", "domain": [0, 0.49], "zeroline": False, "showgrid": False},
             yaxis={"title": "z Depth [mm]", "domain": [0, 0.82], "zeroline": False, "showgrid": False},
@@ -614,9 +660,23 @@ class PlotlyVis:
         graph = {
             "data": data,
             "layout": layout,
-            "config": {"responsive": True},
+            "config": {"responsive": True, "toImageButtonOptions": self.imgExportOptions},
 
         }
+
+        if not dark:
+            graph["layout"].update(dict(
+                font={"color": "black"},
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                xaxis={"title": "x TCP [mm]", "domain": [0, 0.49]},
+                yaxis={"title": "z Depth [mm]", "domain": [0, 0.82]},
+                yaxis2={"domain": [0.85, 1], "ticks": "outside"},
+                xaxis3={"title": "y Progression", "domain": [0.5, 0.9], "ticks": "outside"},
+                yaxis3={"domain": [0, 0.82], "ticks": "outside"},
+                xaxis4={"domain": [0.91, 1], "ticks": "outside"},
+                yaxis4={"domain": [0.85, 1], "ticks": "outside", "side": "right", "anchor": "x3"},
+            ))
 
         return graph
 
@@ -639,8 +699,95 @@ class PlotlyVis:
             x.extend(xSer)
         return (x,z,i)
 
+    def makeParalelSynced(self, df, legend, colorList, dark):
+        data = []
+        ci = 0
 
-    def getParallelSlideLine(self, df, scanStep, color, sheet1, gap, sheet2):
+        for d in df:
+
+            seamlength = 30
+            prozesduration = 240
+            timePerPoint = 14.29
+            pointPerLine = 500
+            extPoints = 40
+            referenzPoints = 10
+            extendRefPoints = 40
+            timeLag = 342.86
+            refPointCooY = 0
+            lineEndCooY = 0
+            refPointCooX = -1.5
+            lineEnCooX = 1.3
+            jumpSpeed = 0.1
+            lineStartCooX = -0.2
+            lineStartCooY = 0
+            scanTime = timePerPoint*(pointPerLine+extPoints+referenzPoints+extendRefPoints)+timeLag
+            lenLineEndPointRefPoint = np.sqrt(np.square(refPointCooY-lineEndCooY) + np.square(refPointCooX-lineEnCooX))
+            timeJumpLineEndPointRefPoint = lenLineEndPointRefPoint/jumpSpeed
+            lenRefPointStartPointLine = np.sqrt(np.square(lineStartCooX-refPointCooX) + np.square(lineStartCooY-refPointCooY))
+            timeJumpRefPointStartPointLine = lenRefPointStartPointLine/jumpSpeed
+            wholeDurationScan = (scanTime + timeJumpLineEndPointRefPoint + timeJumpRefPointStartPointLine)/1000
+            goPerScan = prozesduration/wholeDurationScan
+            gapBetweenLines = seamlength/goPerScan
+
+
+            color = colorList[ci]
+            df = d.drop(["Line Start [us]", "Line End [us]"], axis=1).reset_index(drop=True)  # leaves only xz Matrix
+            df = df.replace("", float("nan")).astype('float64')
+
+            x = np.array(df.keys(), dtype=np.float)
+            xStart = 0 - x[0]
+            xlist = []
+            ylist = []
+
+            for r in range(len(df)):
+                xlist.extend(x + gapBetweenLines*r + xStart)
+                ylist.extend(df.iloc[r,:])
+
+            isempty = ~np.isnan(ylist)
+            ylist = list(np.array(ylist)[isempty])
+            xlist = list(np.array(xlist)[isempty])
+
+            data.append({
+                "x": xlist,
+                "y": ylist,
+                "marker": {"color": color, "size": 2, "opacity": 0.5},
+                "type": 'scatter',
+                "mode": 'markers',
+            })
+
+
+        layout = dict(
+            font={"color": "white"},
+            legend={"x": 0, "y": 1.1, "orientation": "h"},
+            hovermode='closest',
+            bargap=0.1,
+            barmode='overlay',
+            height="700px",
+            paper_bgcolor="black",
+            plot_bgcolor="black",
+            title="Scanline Overlapping",
+            margin={"r": 20, "t": 40, "b": 50, "l": 60},
+            xaxis={"title": "x [mm]", "zeroline": False, "showgrid": False},
+            yaxis={"title": "z Depth [mm]", "zeroline": False, "showgrid": False},
+        )
+
+        graph = {
+            "data": data,
+            "layout": layout,
+            "config": {"responsive": True, "toImageButtonOptions": self.imgExportOptions},
+        }
+
+        if not dark:
+            graph["layout"].update(dict(
+                font={"color": "black"},
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                xaxis={"title": "x [mm]"},
+                yaxis={"title": "z Depth [mm]"},
+            ))
+        return graph
+
+    def getParallelSlideLine(self, df, scanStep, color, sheet1, gap, sheet2, dark):
 
         df = df.drop(["Line Start [us]", "Line End [us]"], axis=1).reset_index(drop=True).replace("", float("nan")).astype('float64') # leaves only xz Matrix
 
@@ -771,10 +918,10 @@ class PlotlyVis:
             font={"color": "white"},
             height="600px",
             showlegend=False,
-            hovermode= 'closest',
+            hovermode='closest',
             paper_bgcolor="black",
             plot_bgcolor="black",
-            margin={"r":20, "t":20, "b":40, "l":60},
+            margin={"r":20, "t":50, "b":50, "l":60},
             xaxis={"title": "x TCP [mm]", "showgrid": False, "zeroline": False, "domain": [0,0.5], "range": [xmi,xma]},
             yaxis={"title": "z Depth [mm]", "showgrid": False, "range": [mi,ma], "autorange": False},
             sliders= [{
@@ -802,14 +949,33 @@ class PlotlyVis:
         graph = {
             "layout": layout,
             "data": data,
-            "config": {"responsive": True},
+            "config": {"responsive": True, "toImageButtonOptions": self.imgExportOptions},
         }
+
+        if not dark:
+            graph["layout"].update(dict(
+                font={"color": "black"},
+                paper_bgcolor="white",
+                plot_bgcolor="white",
+                xaxis={"title": "x TCP [mm]", "domain": [0, 0.5], "range": [xmi, xma]},
+                yaxis={"title": "z Depth [mm]", "range": [mi, ma], "autorange": False},
+                scene1=dict(
+                    domain={"x": [0.5, 1]},
+                    camera={"eye": {"x": 1.8, "y": 0, "z": 0}, "center": {"x": 0, "y": -0.2, "z": 0}},
+                    aspectmode="data",
+                    xaxis={"showgrid": False, "visible": False, "gridcolor": "grey", "showline": False,
+                           "showticklabels": False, "title": {"text": ""}},
+                    yaxis={"showgrid": False, "scaleanchor": "x", "scaleratio": 1, "visible": False},
+                    zaxis={"showgrid": False, "scaleanchor": "x", "scaleratio": 1, "visible": False,
+                           "range": [mi, -mi]},
+                ),
+            ))
 
         return graph
 
 
     ######################## CUSTOM ##############################
-    def getFig(self, df, legend, colorList, bL, bX, bR, type):
+    def getFig(self, df, legend, colorList, bL, bX, bR, type, title, dark, xAx, yAx, yyAx):
         data = []
         ci = 0
         li = 0
@@ -878,22 +1044,175 @@ class PlotlyVis:
 
         layout = dict(
             font={"color": "white"},
+            title=title,
             hovermode='closest',
             paper_bgcolor="black",
             plot_bgcolor="black",
             legend={"orientation": "h", "y": -0.25},
-            xaxis={"tickformat": '%s.%f', "title": "Time [s]"} if bx[0] == "timestamp" else {},
-            yaxis2={"side": "right", "overlaying": "y"}
+            xaxis={"tickformat": '%s.%f', "title": xAx} if bx[0] == "timestamp" else {"title": xAx},
+            yaxis={"title": yAx},
+            yaxis2={"side": "right", "overlaying": "y", "title": yyAx}
         )
 
         graph = {
             "data": data,
             "layout": layout,
-            "config": {"responsive": True},
+            "config": {"responsive": True, "toImageButtonOptions": self.imgExportOptions},
 
         }
 
+        if not dark:
+            graph["layout"].update({
+                "font": {"color": "black"},
+                "paper_bgcolor": "white",
+                "plot_bgcolor": "white",
+            })
+
         return graph
+
+    def getLnFig(self, df, legend, colorList, bL, bX, bR, type, title, dark, xAx, yAx, yyAx):
+        data = []
+        ci = 0
+        li = 0
+        bx = bX
+        if len(bx) == 0:
+            bx = ["index"]
+
+        types = {'line': dict(mode="lines"),
+                 'marker': dict(mode="markers"),
+                 'line and marker': dict(mode="lines+markers"),
+                 'bar': dict(type="bar"),
+                 'histogram': dict(type="histogram")}
+
+        for dff in df:
+            ## Make xTCP chart
+            if bx[0] == "xTCP":
+                color = colorList[ci]
+                ci = ci + 1
+                ddf = dff[1].drop(["Line Start [us]", "Line End [us]"], axis=1).reset_index(drop=True)
+                (x, y) = self.makeCustomXZ(ddf)
+                trace0 = dict(
+                    x=list(x),
+                    y=list(y),
+                    name=f"{legend[li]} - x TCP",
+                    mode="lines+markers",
+                    line={"shape": 'spline', "color": color, "width": 1},
+                    marker={"color": color, "size": 2, "opacity": 0.5},
+                    type='scatter',
+                )
+                trace0.update(types[type[0]])
+                data.append(trace0)
+            ##
+
+            d = dff[0]
+
+            x = list(range(len(d)))
+            if (bx[0] != "timestamp") and (bx[0] == "xTCP"):
+                if len(bx) == 2:
+                    if bx[1] != "timestamp":
+                        x = list(d.loc[:, bx[0]])
+
+            for l in bL:
+                color = colorList[ci]
+                if bx[0] == "timestamp":
+                    lind = list(d.keys()).index(l)
+                    print(lind)
+                    x = d.iloc[:, lind-1]
+                    x = pd.to_datetime(x, unit="us")
+                elif len(bx) == 2:
+                    if bx[1] == "timestamp":
+                        lind = list(d.keys()).index(l)
+                        print(lind)
+                        x = d.iloc[:, lind - 1]
+                        x = pd.to_datetime(x, unit="us")
+                trace1 = dict(
+                    x=list(x),
+                    y=list(d.loc[:, l]),
+                    name=f"{legend[li]} - {l}",
+                    mode= "lines+markers",
+                    line= {"shape": 'spline', "color": color, "width": 1},
+                    marker={"color": color, "size":2, "opacity":0.5},
+                    type='scatter',
+                )
+                trace1.update(types[type[0]])
+
+                data.append(trace1)
+
+                ci = ci + 1
+
+            for r in bR:
+                color = colorList[ci]
+                if bx[0] == "timestamp":
+                    rind = list(d.keys()).index(r)
+                    print(rind)
+                    x = d.iloc[:, rind-1]
+                    x = pd.to_datetime(x, unit="us")
+                elif len(bx) == 2:
+                    if bx[1] == "timestamp":
+                        rind = list(d.keys()).index(r)
+                        print(rind)
+                        x = d.iloc[:, rind - 1]
+                        x = pd.to_datetime(x, unit="us")
+                trace2 = dict(
+                    x=list(x),
+                    y=list(d.loc[:, r]),
+                    name=f"{legend[li]} - {r}",
+                    mode= "lines+markers",
+                    line= {"shape": 'spline', "color": color, "width": 1},
+                    marker={"color": color, "size":2, "opacity":0.5},
+                    type='scatter',
+                    yaxis="y2",
+                )
+                trace2.update(types[type[1]])
+                data.append(trace2)
+
+                ci = ci + 1
+            li = li + 1
+
+
+        layout = dict(
+            font={"color": "white"},
+            title=title,
+            hovermode='closest',
+            paper_bgcolor="black",
+            plot_bgcolor="black",
+            legend={"orientation": "h", "y": -0.25},
+            xaxis={"tickformat": '%s.%f', "title": xAx} if bx[0] == "timestamp" else {"title": xAx},
+            yaxis={"title": yAx},
+            yaxis2={"side": "right", "overlaying": "y", "title": yyAx}
+        )
+
+        graph = {
+            "data": data,
+            "layout": layout,
+            "config": {"responsive": True, "toImageButtonOptions": self.imgExportOptions},
+
+        }
+
+        if not dark:
+            graph["layout"].update({
+                "font": {"color": "black"},
+                "paper_bgcolor": "white",
+                "plot_bgcolor": "white",
+            })
+
+        return graph
+
+    def makeCustomXZ(self, df):
+        x = []
+        z = []
+
+        for key in df.keys():
+            df = df.replace("", float("nan")).astype('float64')
+            kSer = df.loc[:, key]
+            zSer = kSer.dropna()
+
+            z.extend(list(zSer))
+
+            xSer = np.full((1, len(zSer)), key).tolist()[0]
+            x.extend(xSer)
+        return (x, z)
+
 
 
 

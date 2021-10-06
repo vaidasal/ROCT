@@ -28,5 +28,5 @@ export class SharingService {
   changeSelCol(cols) {
     this.selectedColSource.next(cols)
   }
-  
+
 }

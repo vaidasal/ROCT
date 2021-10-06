@@ -4,6 +4,14 @@
     width: 19%;
   }
 
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}
+
+.tcp-card {
+    margin: 6pt;
+}
+
 .container {
     margin: 16px;
     padding: 16px;

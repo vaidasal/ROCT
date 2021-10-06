@@ -53,23 +53,30 @@ export class AnalysisComponent implements OnInit {
     ' WELDING_DEPTH_0',
     'timestamp',
     'index',
+    'x TCP',
   ];
+
+  bags: Array<String> = []
 
   chartTypes = [
     'line', 'marker', 'line and marker', 'bar', 'histogram'
   ]
 
+  titleOptions = ["OCT Scan", "Scatter XZ"]
+  titlexAx = ["Time", "Timestamp", "Index"]
+  titleyAx = ["Depth", "Z"]
+  titleyyAx = ["Depth", "Z"]
+
   seloptionl = "line"
   seloptionr = "line"
 
   customCharts: Array<any> = []
-
+  darkmodeCheck = true;
 
   loader!: boolean;
   loadersubscription!: Subscription;
   selRow: any[] = [];
   rowsubscription!: Subscription;
-  colsubscription!: Subscription;
 
   subscription?: Subscription;
 
@@ -79,11 +86,20 @@ export class AnalysisComponent implements OnInit {
     console.log(this.selRow)
     this.loadersubscription = this.share.loaderSource.subscribe(loader => this.loader = loader)
     this.rowsubscription = this.share.selRowSource.subscribe(selRow => this.selRow = selRow)
-    
+    this.dataService.getCols(this.selRow).subscribe((data) => {
+      const lenOfData = data.length
+      const third = Math.floor(lenOfData/3)
+      this.bag3 = data.slice(0, third)
+      this.bag2 = data.slice(third, third * 2)
+      this.bag1 = data.slice(third * 2)
+      this.basketX = ["index", "timestamp"]
+      if (this.selRow[0]["type"] == "Line") {
+        this.basketX = ["index", "timestamp", "xTCP"]
+      }
+    })
   }
 
   ngOnDestroy() {
-    this.colsubscription?.unsubscribe();
     this.rowsubscription?.unsubscribe();
     this.loadersubscription?.unsubscribe();
   }
@@ -107,13 +123,15 @@ export class AnalysisComponent implements OnInit {
     }
   }
 
-  generateCustomPlot() {
+  generateCustomPlot(title, xAx, yAx, yyAx) {
     console.log("Custom Plot Data Received");
     this.newLoader(true);
     
     var ch = JSON.parse(JSON.stringify({"rows": this.selRow, "basketL": this.basketL,
       "basketR": this.basketR, "basketX": this.basketX,
-        "chartType": [this.seloptionl, this.seloptionr]}))
+      "chartType": [this.seloptionl, this.seloptionr], "chartTitle": title,
+      "xAxName": xAx, "yAxName": yAx, "yyAxName": yyAx,"darkmodeCheck": this.darkmodeCheck
+    }))
     this.customCharts.push(ch)
 
     this.dataService.getCustomPlot(this.customCharts).subscribe((data) => {
@@ -135,7 +153,9 @@ export class AnalysisComponent implements OnInit {
     console.log("Dashboard Data Received");
     this.newLoader(true);
 
-    this.dataService.getDashboard(this.selRow).subscribe((data) => {
+    const rows = { "rows": this.selRow, "mode": this.darkmodeCheck }
+
+    this.dataService.getDashboard(rows).subscribe((data) => {
 
       document.getElementById('cross')!.textContent = data["crosstext"];
       data["cross"].forEach((value, index) => {
@@ -164,14 +184,10 @@ export class AnalysisComponent implements OnInit {
     this.seloptionr = ev.source.selected.value
   }
   removeChart(id: any) {
-    console.log(this.customCharts)
     var idnum = id.substring(1)
-    console.log(idnum)
     this.customCharts.splice(idnum, 1);
     document.getElementById("b" + id)!.style.display = 'none';
     document.getElementById(id)!.style.display = 'none';
-    console.log(this.customCharts)
-
   }
 
 

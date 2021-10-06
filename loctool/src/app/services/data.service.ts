@@ -65,6 +65,13 @@ export class DataService {
       );
   }
 
+  getCols(row: any): Observable<any> {
+    return this.http.post<any>(API_URL + '/getcols', row)
+      .pipe(
+        tap(_ => console.log('getColRequest'))
+      );
+  }
+
 
 
 

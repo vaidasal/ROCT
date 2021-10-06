@@ -39,7 +39,7 @@ export class RegisterComponent implements OnInit {
       password : [null, Validators.required],
       firstname : [null, Validators.required],
       lastname : [null, Validators.required],
-      scope : [null]
+      scope : ["user"]
     });
   }
 

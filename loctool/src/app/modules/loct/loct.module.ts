@@ -24,6 +24,9 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatSelectModule } from '@angular/material/select';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 @NgModule({
@@ -58,6 +61,9 @@ import { MatSelectModule } from '@angular/material/select';
     MatChipsModule,
     MatTabsModule,
     MatSelectModule,
+    MatCheckboxModule,
+    MatRadioModule,
+    MatAutocompleteModule,
   ]
 })
 export class LoctModule { }
