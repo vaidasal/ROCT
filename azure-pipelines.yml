@@ -6,71 +6,35 @@
 trigger:
 - master
 
-variables:
-  # Azure Resource Manager connection created during pipeline creation
-  azureSubscription: 'Azure subscription 1'
 
-  # Environment name
-  environmentName: 'OCTENV'
+pool:
+  vmImage: ubuntu-latest
 
-  # Web app name
-  webAppName: 'OCTTool'
-
-stages:
-- stage: Build
-  displayName: Build stage
-  jobs:
-  - job: BuildJob
-    pool:
-      vmImage: ubuntu-latest
-
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '14.x'
-        checkLatest: true
-    - task: Npm@1
-      inputs:
-        command: 'custom'
-        customCommand: 'install @angular/cli'
-    - task: Npm@1
-      inputs:
-        command: 'install'
-    - task: Npm@1
-      inputs:
-        command: 'custom'
-        customCommand: 'run build'
-    - task: ArchiveFiles@2
-      inputs:
-        rootFolderOrFile: 'dist'
-        includeRootFolder: true
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        replaceExistingArchive: true
-    - task: PublishPipelineArtifact@1
-      inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)'
-        artifact: 'drop'
-        publishLocation: 'pipeline'
-
-- stage: Deploy
-  displayName: 'Deploy Web App'
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
-  - deployment: DeploymentJob
-    pool:
-      vmImage: 'ubuntu-latest'
-    environment: $("environmentName")
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-     
-          - task: AzureWebApp@1
-            displayName: 'Deploy Azure Web App : $(webAppName)'
-            inputs:
-              azureSubscription: $(azureSubscription)
-              appName: $(webAppName)
-              appType: webAppLinux
-              package: $(Pipeline.Workspace)/drop/$(Build.BuildId).zip 
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '14.x'
+    checkLatest: true
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    customCommand: 'install @angular/cli'
+- task: Npm@1
+  inputs:
+    command: 'install'
+- task: Npm@1
+  inputs:
+    command: 'custom'
+    customCommand: 'run build'
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: 'dist'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'drop'
+    publishLocation: 'pipeline'
