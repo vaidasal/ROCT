@@ -1,0 +1,175 @@
+
+<mat-tab-group>
+  <mat-tab label="Custom Visualisation">
+    <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
+
+    <mat-checkbox [(ngModel)]="darkmodeCheck" color="primary" labelPosition="before" class="darkCheck">Dark Mode</mat-checkbox>
+    <mat-form-field class="selectField">
+      <mat-select placeholder="Chart Type Left" (selectionChange)="onSelChangeL($event)">
+        <mat-option *ngFor="let typ of chartTypes" [value]="typ">{{ typ }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <mat-form-field class="selectField">
+      <mat-select placeholder="Chart Type Right" (selectionChange)="onSelChangeR($event)">
+        <mat-option *ngFor="let typ of chartTypes" [value]="typ">{{ typ }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-flat-button color="primary" (click)="generateCustomPlot(titleInput.value, xAxInput.value, yAxInput.value, yyAxInput.value)">Add Plot</button>
+
+    <div class="divOfTitles">
+      <mat-form-field class="selectField">
+        <input placeholder="Title" matInput #titleInput [matAutocomplete]="autoTitle"/>
+        <mat-autocomplete #autoTitle>
+          <mat-option *ngFor="let option of titleOptions" [value]="option">
+            {{ option }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="selectField">
+        <input placeholder="X Axis Name" matInput #xAxInput [matAutocomplete]="autoxAx" />
+        <mat-autocomplete #autoxAx>
+          <mat-option *ngFor="let optx of titlexAx" [value]="optx">
+            {{ optx }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="selectField">
+        <input placeholder="Y left Axis Name" matInput #yAxInput [matAutocomplete]="autoyAx" />
+        <mat-autocomplete #autoyAx>
+          <mat-option *ngFor="let opty of titleyAx" [value]="opty">
+            {{ opty }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+      <mat-form-field class="selectField">
+        <input placeholder="Y right Axis Name" matInput #yyAxInput [matAutocomplete]="autoyyAx" />
+        <mat-autocomplete #autoyyAx>
+          <mat-option *ngFor="let optyy of titleyyAx" [value]="optyy">
+            {{ optyy }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+
+
+    <div cdkDropListGroup class="dropLists">
+
+      <mat-label>Parameter</mat-label>
+
+      <div class="example-container">
+
+        <div cdkDropList
+             cdkDropListOrientation="horizontal"
+             [cdkDropListData]="bag1"
+             class="example-list"
+             cdkDropListSortingDisabled
+             (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let bag of bag1" cdkDrag>{{bag}}</div>
+        </div>
+      </div>
+
+      <div class="example-container">
+
+        <div cdkDropList
+             cdkDropListOrientation="horizontal"
+             [cdkDropListData]="bag2"
+             class="example-list"
+             cdkDropListSortingDisabled
+             (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let bag of bag2" cdkDrag>{{bag}}</div>
+        </div>
+      </div>
+
+      <div class="example-container">
+
+        <div cdkDropList
+             cdkDropListOrientation="horizontal"
+             [cdkDropListData]="bag3"
+             class="example-list"
+             cdkDropListSortingDisabled
+             (cdkDropListDropped)="drop($event)">
+          <div class="example-box" *ngFor="let bag of bag3" cdkDrag>{{bag}}</div>
+        </div>
+      </div>
+
+      <table class="basket-full-width">
+        <tr>
+          <td>
+            <mat-label>Left Axis</mat-label>
+
+            <div cdkDropList
+                 [cdkDropListData]="basketL"
+                 class="vertical-list"
+                 (cdkDropListDropped)="drop($event)">
+              <div class="vertical-box" *ngFor="let item of basketL" cdkDrag>{{item}}</div>
+            </div>
+          </td>
+          <td>
+            <mat-label>X Axis</mat-label>
+
+            <div cdkDropList
+                 [cdkDropListData]="basketX"
+                 class="vertical-list"
+                 (cdkDropListDropped)="drop($event)">
+              <div class="vertical-box" *ngFor="let item of basketX" cdkDrag>{{item}}</div>
+            </div>
+          </td>
+          <td>
+            <mat-label>Right Axis</mat-label>
+
+            <div cdkDropList
+                 [cdkDropListData]="basketR"
+                 class="vertical-list"
+                 (cdkDropListDropped)="drop($event)">
+              <div class="vertical-box" *ngFor="let item of basketR" cdkDrag>{{item}}</div>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+
+
+    <h3 id="custom"></h3>
+    <div *ngFor="let cu of customPlots">
+      <div [style.display]="true ? 'none': ''" id="b{{cu}}"
+           (click)="removeChart(cu)" class="closeButton"><mat-icon>close</mat-icon></div>
+      <div #customPlot id="{{cu}}"></div>
+    </div>
+
+  </mat-tab>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span (click)="getDashboard()">Dashboard</span>
+    </ng-template>
+    <div class="dashboardTab">
+
+      <button type="button" mat-button (click)="toggleSidenav()"><mat-icon>view_quilt</mat-icon></button>
+      <mat-checkbox [(ngModel)]="darkmodeCheck" labelPosition="before" class="darkCheck">Dark Mode</mat-checkbox>
+      <mat-divider></mat-divider>
+      <h3 id="cross"></h3>
+      <div *ngFor="let cp of crossPlots">
+        <div #crossPlot id="{{cp}}"></div>
+      </div>
+      <mat-divider></mat-divider>
+
+      <h3 id="parallel"></h3>
+      <div *ngFor="let pp of parallelPlots">
+        <div #parallelPlot id="{{pp}}"></div>
+      </div>
+      <mat-divider></mat-divider>
+
+      <h3 id="point"></h3>
+      <div *ngFor="let po of pointPlots">
+        <div #pointPlot id="{{po}}"></div>
+      </div>
+
+    </div>
+
+
+  </mat-tab>
+  
+</mat-tab-group>
+
+

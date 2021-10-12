@@ -1,0 +1,6 @@
+.container {
+  overflow: auto !important;
+  max-height: 70vh !important;
+  padding: 5pt;
+}
+

@@ -1,0 +1,19 @@
+
+
+<form [formGroup]="updateForm" (ngSubmit)="onFormSubmit()" class="modalUpdate">
+  <h2>UPDATE DATA</h2>
+  <div class="container">
+    <div formArrayName="fields">
+      <div *ngFor="let field of fields.controls; index as i">
+        <mat-form-field appearance="fill">
+          <mat-label>{{ fieldLabels[i] }}</mat-label>
+          <input matInput name="{{ fieldLabels[i] }}" [formControlName]="i">
+        </mat-form-field>
+      </div>
+    </div>
+    </div>
+    <button type="submit" mat-raised-button color="primary">Update</button>
+</form>
+
+
+

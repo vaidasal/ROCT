@@ -1,0 +1,31 @@
+<div mat-dialog-content>
+    <div class="example-loading-shade"
+         *ngIf="isLoadingResults">
+      <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    </div>
+      <form [formGroup]="changepwForm" (ngSubmit)="onFormSubmit()">
+        <h2>CHANGE PASSWORD</h2>
+        
+        <mat-form-field class="example-full-width">
+          <label>
+            <input type="password" matInput placeholder="Old Password" formControlName="password"
+                   [errorStateMatcher]="matcher">
+          </label>
+          <mat-error>
+            <span *ngIf="!changepwForm.get('password')?.valid && changepwForm.get('password')?.touched">Please enter old Password</span>
+          </mat-error>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-full-width">
+            <label>
+              <input type="password" matInput placeholder="New Password" formControlName="newPassword"
+                     [errorStateMatcher]="matcher">
+            </label>
+            <mat-error>
+              <span *ngIf="!changepwForm.get('newPassword')?.valid && changepwForm.get('newPassword')?.touched">Please enter new Password</span>
+            </mat-error>
+          </mat-form-field>
+          <br>
+          <button type="submit" [disabled]="!changepwForm.valid" mat-raised-button color="warn">Submit</button>
+      </form>
+</div>

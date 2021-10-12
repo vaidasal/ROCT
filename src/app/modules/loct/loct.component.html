@@ -1,0 +1,51 @@
+<mat-drawer-container>
+    <mat-drawer #drawer class="sidenav" mode="side" opened="false">
+        <div layout="column">
+          <app-filter></app-filter>
+        </div>
+        
+        
+    </mat-drawer>
+  
+    <div class="sidenav-content">
+        <div layout="column" class="content-col">
+
+          <div flex layout_md="row">
+            
+
+            <mat-stepper [linear]="isLinear" #stepper [selectedIndex]="selectedIndex" (selectionChange)="changeIndex($event)">
+              <mat-step [completed]="true">
+                <ng-template matStepLabel>DATA ENTRY</ng-template>
+                <ng-template matStepContent>
+                  <app-dataentry></app-dataentry>
+                </ng-template>
+              </mat-step>
+              <mat-step>
+                <ng-template matStepLabel>DATABASE</ng-template>
+                <ng-template matStepContent>
+                  <app-data></app-data>
+                </ng-template>
+              </mat-step>
+              <mat-step>
+                <ng-template matStepLabel>VISUAL</ng-template>
+                <ng-template matStepContent>
+                  <app-analysis *ngIf="selectedIndex === 2"></app-analysis>
+                </ng-template>
+              </mat-step>
+              <mat-step>
+                <ng-template matStepLabel>ANALYSIS</ng-template>
+
+              </mat-step>
+            </mat-stepper>
+
+          </div>
+        </div>
+        
+        
+    
+    </div>
+  
+  </mat-drawer-container>
+
+<router-outlet></router-outlet>
+
