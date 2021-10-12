@@ -10,6 +10,9 @@ variables:
   # Azure Resource Manager connection created during pipeline creation
   azureSubscription: 'Azure subscription 1'
 
+  # Environment name
+  environmentName: 'OCTENV'
+
   # Web app name
   webAppName: 'OCTTool'
 
@@ -58,7 +61,7 @@ stages:
   - deployment: DeploymentJob
     pool:
       vmImage: 'ubuntu-latest'
-    environment: $("ToolOCT")
+    environment: $("environmentName")
     strategy:
       runOnce:
         deploy:
